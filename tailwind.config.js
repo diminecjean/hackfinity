@@ -16,6 +16,21 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    colors:{
+      'blue': {
+        light: '#8ecae6',
+        mid: '#219EBC',
+        dark: '#023047',
+        hover: '#00566B',
+      },
+      'yellow': {
+        mid: '#FFB703',
+        dark: '#FB8500',
+        hover: '#9F5400',
+      },
+      'grey': "#E3E3E3",
+      'white': "#FFFFFF",
+    },
     extend: {
       keyframes: {
         "accordion-down": {
