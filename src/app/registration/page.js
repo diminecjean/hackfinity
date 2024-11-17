@@ -116,9 +116,9 @@ const LabelInputContainer = ({
 
 export default function Registration() {
   return (
-    <>
+    <div className="mx-auto my-20">
       <SignupFormDemo />
-    </>
+    </div>
   )
 
 };

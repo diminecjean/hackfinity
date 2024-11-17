@@ -20,9 +20,11 @@ const geistMono = localFont({
 
 const Navbar = () => {
   //TODO: make a dropdown for landing to navigate to different sections
+  //TODO: center navbar properly
   const [currentPage, setCurrentPage] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // TODO: setup login auth
-  const [navbarOpacity, setNavbarOpacity] = useState(100); // TODO: fix this opacity shit
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // TODO: setup login auth
+  const [navbarVisible, setNavbarVisible] = useState(true);
+  const [prevScrollY, setPrevScrollY] = useState(0); 
 
   const navLinks = [
     { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true },
@@ -34,19 +36,25 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-      const newOpacity = Math.max(100 - scrollY / 10, 20);
-      setNavbarOpacity(newOpacity);
+      if (scrollY > prevScrollY) {
+        // Scrolling down
+        setNavbarVisible(false);
+      } else {
+        // Scrolling up
+        setNavbarVisible(true);
+      }
+      setPrevScrollY(scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [prevScrollY]);
 
   // TODO: responsive navbar
   return (
-    <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-lg mx-auto z-50 rounded-full bg-opacity-${navbarOpacity} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
+    <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-lg z-50 rounded-full transition-transform duration-300 ${navbarVisible ? 'translate-y-0' : '-translate-y-[200%]'} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
       <div className="mx-auto flex justify-center items-center">
         <div className="hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-semibold sm:text-md md:text-lg">
           {navLinks
@@ -93,19 +101,19 @@ const Footer = () => (
   <footer className="grid-rows-4 w-full">
     <div className="row-span-2 bg-grey row-start-3 flex xs:gap-4 sm:gap-8 md:gap-16 flex-wrap items-center justify-center p-8 text-blue-dark font-semibold">
       <FooterLink
-        href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+        href="https://www.facebook.com/BizMakerUSM/?locale=ms_MY"
         src="/facebook.png"
         alt="Facebook"
         text="BizMaker 2024"
       />
       <FooterLink
-        href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+        href="https://www.instagram.com/bizmaker_2024/"
         src="/instagram.png"
         alt="Instagram"
         text="bizmaker_2024"
       />
       <FooterLink
-        href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+        href="mailto:usm.bizmaker@gmail.com"
         src="/email.png"
         alt="Email"
         text="usm.bizmaker@gmail.com"
@@ -125,7 +133,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-dark`}
       >
-        <div className="flex justify-center items-center m-8 absolute w-full">
+        <div className="flex justify-center m-8 absolute w-full">
           <Navbar />
         </div>
         {children}

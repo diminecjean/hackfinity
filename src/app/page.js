@@ -6,7 +6,7 @@ import asset1 from "@/../public/asset-1.svg";
 import { Timeline } from "@/components/ui/timeline";
 
 const TimelineContent = ({ text }) => (
-  <div className="bg-yellow-mid p-12 rounded-2xl text-black">
+  <div className="bg-yellow-mid p-16 rounded-2xl text-black">
     <h1 className="text-2xl font-semibold">{text}</h1>
   </div>
 );
@@ -49,20 +49,19 @@ const timelineData = [
   
 export default function Home() {
   return (
-    <div className="grid min-h-screen font-[family-name:var(--font-geist-sans)]">
+    <div className="w-full grid min-h-screen font-[family-name:var(--font-geist-sans)]">
     <main className="flex flex-col items-center sm:items-start">
       <div className="relative top-0 w-full h-5/6 overflow-hidden">
         <Image
           src={coverImg}
           alt="Cover Image"
-          className="object-cover"
-          style={{objectFit: "contain"}}
+          className="object-cove w-full h-full"
         />
         <div className="absolute inset-0 flex justify-center items-center">
           <Image
             src={logo}
             alt="Logo"
-            className="object-contain w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 transition-transform duration-300 hover:scale-110"
+            className="object-contain w-8/12 h-auto md:w-8/12 md:h-auto lg:w-10/12 lg:h-auto transition-transform duration-300 hover:scale-110"
           />
         </div>
       </div>
@@ -109,7 +108,7 @@ export default function Home() {
 
         <section id="timeline" className="align-center text-center justify-center">
           <h1 className="font-bold text-5xl text-white">Timeline</h1>   
-          <div className="rounded-3xl bg-black mx-12 sm:mx-32 md:mx-48 my-8">
+          <div className="rounded-3xl bg-black mx-12 sm:mx-32 md:mx-64 my-8">
             <Timeline data={timelineData} />
           </div>
         </section>
