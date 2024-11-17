@@ -30,6 +30,7 @@ module.exports = {
       },
       'grey': "#E3E3E3",
       'white': "#FFFFFF",
+      'black': "#000000",
     },
     extend: {
       keyframes: {

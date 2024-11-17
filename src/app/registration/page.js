@@ -9,7 +9,7 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 
-export default function SignupFormDemo() {
+function SignupFormDemo() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted");
@@ -111,4 +111,14 @@ const LabelInputContainer = ({
       {children}
     </div>)
   );
+};
+
+
+export default function Registration() {
+  return (
+    <>
+      <SignupFormDemo />
+    </>
+  )
+
 };

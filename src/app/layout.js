@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import localFont from "next/font/local";
 import "./globals.css";
@@ -19,8 +19,10 @@ const geistMono = localFont({
 });
 
 const Navbar = () => {
+  //TODO: make a dropdown for landing to navigate to different sections
   const [currentPage, setCurrentPage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(true); // TODO: setup login auth
+  const [navbarOpacity, setNavbarOpacity] = useState(100); // TODO: fix this opacity shit
 
   const navLinks = [
     { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true },
@@ -29,10 +31,24 @@ const Navbar = () => {
     { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const newOpacity = Math.max(100 - scrollY / 10, 20);
+      setNavbarOpacity(newOpacity);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // TODO: responsive navbar
   return (
-    <div className={`inline-flex inset-x-0 max-w-md mx-auto z-50 rounded-full bg-opacity-90 ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
+    <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-lg mx-auto z-50 rounded-full bg-opacity-${navbarOpacity} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
       <div className="mx-auto flex justify-center items-center">
-        <div className="hidden md:flex pr-4 pl-8 gap-x-6 text-center font-medium">
+        <div className="hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-semibold sm:text-md md:text-lg">
           {navLinks
             .filter(link => (isLoggedIn ? link.showWhenLoggedIn : link.showWhenLoggedOut))
             .map(link => (
@@ -55,19 +71,27 @@ const Navbar = () => {
 
 const FooterLink = ({ href, src, alt, text }) => (
   <a
-    className="flex items-center gap-4 hover:underline hover:underline-offset-4"
+    className="flex items-center gap-2 md:gap-4 hover:underline hover:underline-offset-4"
     href={href}
     target="_blank"
     rel="noopener noreferrer"
   >
-    <Image aria-hidden src={src} alt={alt} width={40} height={40} />
-    {text}
+    <Image
+      aria-hidden
+      src={src}
+      alt={alt}
+      width={20} 
+      height={20}
+    />
+    <div className="text-xs sm:text-sm md:text-md lg:text-lg">
+      {text}
+    </div>
   </a>
 );
 
 const Footer = () => (
-  <footer className="grid-rows-4">
-    <div className="row-span-2 bg-grey row-start-3 flex gap-16 flex-wrap items-center justify-center p-8 text-blue-dark font-semibold">
+  <footer className="grid-rows-4 w-full">
+    <div className="row-span-2 bg-grey row-start-3 flex xs:gap-4 sm:gap-8 md:gap-16 flex-wrap items-center justify-center p-8 text-blue-dark font-semibold">
       <FooterLink
         href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
         src="/facebook.png"
@@ -99,9 +123,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-dark`}
       >
-        <div className="flex justify-center items-center m-8">
+        <div className="flex justify-center items-center m-8 absolute w-full">
           <Navbar />
         </div>
         {children}
