@@ -1,124 +1,360 @@
 "use client";
-import React from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import React, { useState } from "react";
+import TopBanner from "@/components/custom/top-banner";
+import ProgressBar from "./progress-bar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
-  IconBrandGithub,
-  IconBrandGoogle,
-  IconBrandOnlyfans,
-} from "@tabler/icons-react";
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import CountrySelect from "./country-select";
 
-function SignupFormDemo() {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form submitted");
-  };
+const formSchema = z.object({
+//   firstName: z.string().min(1, 'First name is required'),
+//   lastName: z.string().min(1, 'Last name is required'),
+//   email: z.string().email('Invalid email address'),
+//   phone: z.string().min(1, 'Phone number is required'),
+//   country: z.string().min(1, 'Country is required'),
+//   university: z.string().min(1, 'University is required'),
+
+//   username: z.string().min(1, 'Username is required'),
+//   password: z.string().min(1, 'Password is required'),
+
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().email('Invalid email address').optional(),
+  phone: z.string().optional(),
+  country: z.string().optional(),
+  university: z.string().optional(),
+  username: z.string().optional(),
+  password: z.string().optional(),
+});
+
+const FormFieldComponent = ({ control, name, label, description, placeholder, type = "text" }) => (
+  <FormField
+    control={control}
+    name={name}
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel className="text-white text-lg">{label}<br/><span className="text-yellow-mid text-sm font-medium">{description}</span></FormLabel>
+        <FormControl>
+          <Input placeholder={placeholder} type={type} {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
+function PersonalInformation({ onNext }) {
+    const [countryCode, setCountryCode] = useState("");
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        country: "",
+        university: "",
+        }
+    });
+
+    function onSubmit(values) {
+        console.log(values);
+        onNext();
+    }
+
   return (
-    (<div
-      className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-        Welcome to Aceternity
+    <div className="max-w-4xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input text-white">
+      <h2 className="font-bold text-xl mb-6">
+        Profile Information
       </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Login to aceternity if you can because we don&apos;t have a login flow
-        yet
-      </p>
-      <form className="my-8" onSubmit={handleSubmit}>
-        <div
-          className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="lastname">Last name</Label>
-            <Input id="lastname" placeholder="Durden" type="text" />
-          </LabelInputContainer>
-        </div>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-8">
-          <Label htmlFor="twitterpassword">Your twitter password</Label>
-          <Input id="twitterpassword" placeholder="••••••••" type="twitterpassword" />
-        </LabelInputContainer>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* First Column */}
+            <div className="space-y-6">
+                <FormFieldComponent
+                    control={form.control}
+                    name="firstName"
+                    label="First Name"
+                    placeholder="Enter your first name"
+                />
+                <FormFieldComponent
+                    control={form.control}
+                    name="email"
+                    label="Email"
+                    placeholder="Enter your email"
+                    type="email"
+                />
+                <FormItem>
+                    <FormLabel className="text-white text-lg pb-2">Country</FormLabel>
+                    <Controller
+                        name="country"
+                        control={form.control}
+                        render={({ field }) => (
+                            <CountrySelect
+                            {...field}
+                            onChange={(value) => field.onChange(value)}
+                            priorityOptions={["MY"]}
+                            placeholder="Select your country"
+                            />
+                        )}
+                    />
+                </FormItem>
+            </div>
 
-        <button
-          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-          type="submit">
-          Sign up &rarr;
-          <BottomGradient />
-        </button>
+            {/* Second Column */}
+            <div className="space-y-6">
+              <FormFieldComponent
+                control={form.control}
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter your last name"
+              />
+              <FormFieldComponent
+                control={form.control}
+                name="phone"
+                label="Phone Number"
+                placeholder="Enter your phone number"
+              />
+              <FormFieldComponent
+                control={form.control}
+                name="university"
+                label="University"
+                placeholder="Enter your university"
+              />
+            </div>
+          </div>
 
-        <div
-          className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-
-        <div className="flex flex-col space-y-4">
-          <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit">
-            <IconBrandGithub className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              GitHub
-            </span>
-            <BottomGradient />
-          </button>
-          <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit">
-            <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              Google
-            </span>
-            <BottomGradient />
-          </button>
-          <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit">
-            <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              OnlyFans
-            </span>
-            <BottomGradient />
-          </button>
-        </div>
-      </form>
-    </div>)
+          <div className="flex justify-end mt-6">
+            <Button type="submit" className="w-32 bg-blue-mid">
+              Next →
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 }
 
-const BottomGradient = () => {
-  return (<>
-    <span
-      className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-    <span
-      className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-  </>);
-};
+function CreateAccount({ onPrevious, onNext }) {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    }
+  });
 
-const LabelInputContainer = ({
-  children,
-  className
-}) => {
+  function onSubmit(values) {
+    console.log(values);
+  }
+
   return (
-    (<div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>)
-  );
-};
+    <div className="max-w-4xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input text-white">
+      <h2 className="font-bold text-xl mb-6">
+        Create Account
+      </h2>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            <FormFieldComponent
+              control={form.control}
+              name="username"
+              label="Username"
+              placeholder="Enter your username"
+            />
+            <FormFieldComponent
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+              type="email"
+            />
+            <FormFieldComponent
+              control={form.control}
+              name="password"
+              label="Confirm Password"
+              placeholder="Confirm your password"
+            />
+          </div>
+          {/* Add checkbox to agree to terms */}
 
+          <div className="flex justify-between mt-6">
+            <Button type="button" onClick={onPrevious} className="w-32 bg-blue-light">
+              Previous
+            </Button>
+            <Button type="submit" onClick={onNext} className="w-32 bg-blue-mid">
+              Sign Up
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}
+
+function RegisterTeam(){
+    const NEW_TEAM = "newTeam";
+    const EXISTING_TEAM = "existingTeam";
+    const NONE = "none";
+    const [teamType, setTeamType] = useState("none");
+
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+          username: "",
+          password: "",
+        }
+      });
+
+      function onSubmit(values) {
+        console.log(values);
+      }
+    
+    return (
+        <div className="max-w-4xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input text-white">
+            <h2 className="font-bold text-xl mb-6">
+                Team Information
+            </h2>
+
+            {
+                teamType === NONE && (
+                    <div className="space-y-6">
+                        <Button onClick={() => setTeamType(NEW_TEAM)} className="text-xl p-8 w-full bg-yellow-dark">
+                            Create a New Team
+                        </Button>
+                        <Button onClick={() => setTeamType(EXISTING_TEAM)} className="text-xl p-8 w-full bg-blue-mid">
+                            Join an Existing Team
+                        </Button>
+                    </div>
+                )
+            }
+            {
+                teamType === NEW_TEAM && (
+                    <>
+                        <h2 className="font-bold text-xl text-yellow-dark mb-6">
+                            Create a New Team
+                        </h2>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <div className="grid grid-cols-1 gap-6 my-12">
+                                <div className="grid grid-cols-4 justify-between items-end gap-4">
+                                    <div className="col-span-3">
+                                        <FormFieldComponent
+                                        control={form.control}
+                                        name="teamname"
+                                        label="Team Name"
+                                        placeholder="Enter your team name."
+                                        />
+                                    </div>
+                                    <div className="col-span-1">
+                                        <Button type="button" className="w-full bg-yellow-dark">Generate Code </Button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-4 justify-between items-end gap-4">
+                                    <div className="col-span-3">
+                                        <FormFieldComponent
+                                        control={form.control}
+                                        name="teamcode"
+                                        label="Team Code"
+                                        placeholder="Team Code"
+                                        description={"Share this code with your team members to join this team."}
+                                        />
+                                    </div>
+                                    <div className="col-span-1">
+                                        <Button type="button" className="w-full bg-blue-mid">Copy Code </Button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between mt-6">
+                                <Button type="button" onClick={() => setTeamType(NONE)} className="w-32 bg-blue-light">
+                                Previous
+                                </Button>
+                                <Button type="submit" className="w-32 bg-blue-mid">
+                                Sign Up
+                                </Button>
+                            </div>
+                            </form>
+                        </Form>
+                    </>
+                )
+            }
+            {
+                teamType === EXISTING_TEAM && (
+                    <>
+                        <h2 className="font-bold text-xl text-blue-mid mb-6">
+                            Join an Existing Team
+                        </h2>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <div className="grid grid-cols-1 gap-6 my-12">
+                                <div className="grid grid-cols-4 justify-between items-end gap-4">
+                                <div className="col-span-3">
+                                        <FormFieldComponent
+                                        control={form.control}
+                                        name="teamcode"
+                                        label="Team Code"
+                                        placeholder="Team Code"
+                                        description={"Enter the team code provided by your team leader."}
+                                        />
+                                    </div>
+                                    <div className="col-span-1">
+                                        <Button type="button" className="w-full bg-blue-mid">Confirm</Button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between mt-6">
+                                <Button type="button" onClick={() => setTeamType(NONE)} className="w-32 bg-blue-light">
+                                Previous
+                                </Button>
+                                <Button type="submit" className="w-32 bg-blue-mid">
+                                Sign Up
+                                </Button>
+                            </div>
+                            </form>
+                        </Form>
+                    </>
+                )
+            }
+
+        </div>
+    )
+}
 
 export default function Registration() {
-  return (
-    <div className="mx-auto my-20">
-      <SignupFormDemo />
-    </div>
-  )
+  const [step, setStep] = useState(1);
 
-};
+  const handleNext = () => setStep(step + 1);
+  const handlePrevious = () => setStep(step - 1);
+
+  return (
+    <div className="font-[family-name:var(--font-geist-sans)]">
+      <TopBanner
+        title="Registration"
+        description="Each team can have up to 5 members"
+      />
+      <div className="container mx-auto px-4 min-h-[450px]">
+        <div className="w-full mx-auto my-8">
+          <ProgressBar progress={step} />
+        </div>
+        {step === 1 && <PersonalInformation onNext={handleNext} />}
+        {step === 2 && <CreateAccount onPrevious={handlePrevious} onNext={handleNext} />}
+        {step === 3 && <RegisterTeam />}
+      </div>
+    </div>
+  );
+}
