@@ -4,7 +4,7 @@ const Dot = ({ progress, position }) => {
   };
 
   return (
-    <div className={`w-12 h-12 rounded-full transition-colors duration-600 delay-200 ${getColor(position)}`} />
+    <div className={`w-8 h-8 rounded-full transition-colors duration-600 delay-200 ${getColor(position)}`} />
   );
 };
 
