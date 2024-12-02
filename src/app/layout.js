@@ -97,17 +97,17 @@ const Navbar = () => {
       ...prev,
       [id]: value
     }));
-    console.log({formData});
+    console.log({ formData });
   };
 
-  const handleSubmit = (e) => {
+  const handleLoginSubmit = (e) => {
     e.preventDefault();
-    
+
     // Check if email is admin (you can modify this logic as needed)
     const isAdminEmail = formData.email.toLowerCase().includes('admin');
     setIsAdmin(isAdminEmail);
     setIsLoggedIn(true);
-    console.log({isAdmin});
+    console.log({ isAdmin });
     setOpen(false);
   };
 
@@ -128,60 +128,60 @@ const Navbar = () => {
                   </Link>
                 </div>
               ))}
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger>
-                  {renderLoginButton()}
-                </DialogTrigger>
-                <PortalDialog>
-                  <DialogHeader>
-                    <DialogTitle className="text-white font-semibold text-2xl">Login to Your Profile</DialogTitle>
-                    <DialogDescription className="text-white">
-                      Don't have an account? Click <Link href="/registration" onClick={()=> {setOpen(false); setCurrentPage("/registration")}} className="underline text-blue-mid hover:text-yellow-mid">here</Link> to register.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form onSubmit={handleSubmit}>
-                    <div className="grid gap-4 p-4 text-white">
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <div className="col-span-1">
-                          <Label htmlFor="name" className="text-right text-white">
-                            Email
-                          </Label>
-                        </div>
-                        <div className="col-span-3">
-                          <Input
-                            id="email"
-                            type="email"
-                            className="col-span-3"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger>
+                {renderLoginButton()}
+              </DialogTrigger>
+              <PortalDialog>
+                <DialogHeader>
+                  <DialogTitle className="text-white font-semibold text-2xl">Login to Your Profile</DialogTitle>
+                  <DialogDescription className="text-white">
+                    Don't have an account? Click <Link href="/registration" onClick={() => { setOpen(false); setCurrentPage("/registration") }} className="underline text-blue-mid hover:text-yellow-mid">here</Link> to register.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleLoginSubmit}>
+                  <div className="grid gap-4 p-4 text-white">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <div className="col-span-1">
+                        <Label htmlFor="name" className="text-right text-white">
+                          Email
+                        </Label>
                       </div>
-                      <div className="grid grid-cols-4 items-center gap-4">
-                        <div className="col-span-1">
-                          <Label htmlFor="name" className="text-right text-white">
-                            Password
-                          </Label>
-                        </div>
-                        <div className="col-span-3">
-                          <Input
-                            id="password"
-                            type="password"
-                            className="col-span-3"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
+                      <div className="col-span-3">
+                        <Input
+                          id="email"
+                          type="email"
+                          className="col-span-3"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                        />
                       </div>
                     </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <div className="col-span-1">
+                        <Label htmlFor="name" className="text-right text-white">
+                          Password
+                        </Label>
+                      </div>
+                      <div className="col-span-3">
+                        <Input
+                          id="password"
+                          type="password"
+                          className="col-span-3"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <DialogFooter>
                     <Button type="submit" className="bg-blue-mid text-white px-4 py-2 rounded-xl">Login</Button>
                   </DialogFooter>
-                  </form>
-                </PortalDialog>
-              </Dialog>
+                </form>
+              </PortalDialog>
+            </Dialog>
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@ const FooterLink = ({ href, src, alt, text }) => (
       aria-hidden
       src={src}
       alt={alt}
-      width={20} 
+      width={20}
       height={20}
     />
     <div className="text-xs sm:text-sm md:text-md lg:text-lg">
