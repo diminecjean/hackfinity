@@ -132,7 +132,8 @@ const Navbar = () => {
                     <p onClick={() => setCurrentPage(link.href)}>{link.label}</p>
                   </Link>
                 </div>
-              ))}
+              ))
+            }
             <Dialog open={open} onOpenChange={setOpen}> {/* setOpen is not necessary actually, but simply onOpenChange need a function type value and can't be null */}
               {renderLoginButton()}
               <PortalDialog>
