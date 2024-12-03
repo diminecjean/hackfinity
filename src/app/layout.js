@@ -133,10 +133,8 @@ const Navbar = () => {
                   </Link>
                 </div>
               ))}
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger>
-                {renderLoginButton()}
-              </DialogTrigger>
+            <Dialog open={open} onOpenChange={setOpen}> {/* setOpen is not necessary actually, but simply onOpenChange need a function type value and can't be null */}
+              {renderLoginButton()}
               <PortalDialog>
                 <DialogHeader>
                   <DialogTitle className="text-white font-semibold text-2xl">Login to Your Profile</DialogTitle>
