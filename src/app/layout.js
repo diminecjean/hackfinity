@@ -56,10 +56,11 @@ const Navbar = () => {
   const [prevScrollY, setPrevScrollY] = useState(0);
 
   const navLinks = [
-    { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true },
-    { href: '/registration', label: 'Registration', showWhenLoggedIn: false, showWhenLoggedOut: true },
-    { href: '/submission', label: 'Submission', showWhenLoggedIn: true, showWhenLoggedOut: false },
-    { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false },
+    { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
+    { href: '/registration', label: 'Registration', showWhenLoggedIn: false, showWhenLoggedOut: true, showWhenAdminLoggedIn: false },
+    { href: '/submission', label: 'Submission', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
+    { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
+    { href: '/admin/view_team', label: 'View Teams', showWhenLoggedIn: false, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
   ];
   const [formData, setFormData] = useState({
     email: '',
@@ -87,6 +88,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
+    setIsAdmin(false);
     setCurrentPage('/');
   };
 
@@ -125,7 +127,12 @@ const Navbar = () => {
         <div className="mx-auto flex justify-center items-center">
           <div className="hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-semibold sm:text-md md:text-lg">
             {navLinks
-              .filter(link => (isLoggedIn ? link.showWhenLoggedIn : link.showWhenLoggedOut))
+              .filter(link => {
+                if (isAdmin) {
+                  return link.showWhenAdminLoggedIn;
+                }
+                return isLoggedIn ? link.showWhenLoggedIn : link.showWhenLoggedOut;
+              })
               .map(link => (
                 <div key={link.href} className={`flex items-center hover:underline ${currentPage === link.href ? 'underline' : ''}`}>
                   <Link href={link.href}>
