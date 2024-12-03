@@ -85,8 +85,13 @@ const Navbar = () => {
     };
   }, [prevScrollY]);
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentPage('/');
+  };
+
   const renderLoginButton = () => (
-    <div className={`flex items-center px-4 py-2 rounded-full text-white cursor-pointer ${isLoggedIn ? 'bg-yellow-dark hover:bg-yellow-hover' : 'bg-blue-mid hover:bg-blue-hover'}`}>
+    <div className={`flex items-center px-4 py-2 rounded-full text-white cursor-pointer ${isLoggedIn ? 'bg-yellow-dark hover:bg-yellow-hover' : 'bg-blue-mid hover:bg-blue-hover'}`} onClick={isLoggedIn ? handleLogout : () => setOpen(true)}>
       <p>{isLoggedIn ? 'Logout' : 'Login'}</p>
     </div>
   );
@@ -100,7 +105,7 @@ const Navbar = () => {
     console.log({ formData });
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginDialogSubmit = (e) => {
     e.preventDefault();
 
     // Check if email is admin (you can modify this logic as needed)
@@ -110,7 +115,7 @@ const Navbar = () => {
     console.log({ isAdmin });
     setOpen(false);
   };
-
+  
   return (
     // TODO: Create the page links that only admin can view
     // Probably need to pass the user role to other components across different pages to conditionally render stuff 
@@ -139,7 +144,7 @@ const Navbar = () => {
                     Don't have an account? Click <Link href="/registration" onClick={() => { setOpen(false); setCurrentPage("/registration") }} className="underline text-blue-mid hover:text-yellow-mid">here</Link> to register.
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleLoginSubmit}>
+                <form onSubmit={handleLoginDialogSubmit}>
                   <div className="grid gap-4 p-4 text-white">
                     <div className="grid grid-cols-4 items-center gap-4">
                       <div className="col-span-1">
