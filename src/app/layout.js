@@ -90,6 +90,7 @@ const Navbar = () => {
     setIsLoggedIn(false);
     setIsAdmin(false);
     setCurrentPage('/');
+    window.location.href = '/';
   };
 
   const renderLoginButton = () => (
