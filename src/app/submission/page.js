@@ -22,8 +22,11 @@ const SubmissionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white p-8">
-      <TopBanner title="Submission" description="Use this page to submit your final solution for BizMaker. Be sure to double-check all information before submitting!" />
+    <div className="min-h-screen bg-blue-900 text-white">
+      <TopBanner 
+        title="Submission" 
+        description="Use this page to submit your final solution for BizMaker. Be sure to double-check all information before submitting!" 
+      />
       <div className="max-w-4xl mx-auto">
         <main className="mt-10 bg-blue-800 p-6 rounded-lg shadow-md">
           <div className="mt-8">
