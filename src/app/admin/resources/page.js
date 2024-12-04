@@ -2,6 +2,9 @@
 import TopBanner from "@/components/custom/top-banner";
 import { useState } from "react";
 
+// Dummy user role, replace with actual user role logic from authentication
+const userRole = "admin"; // This could be "admin" or "user"
+
 export default function Resources() {
     const [resources, setResources] = useState([
         { id: 1, title: "Onboarding Guide", section: "getting-started" },
@@ -12,7 +15,7 @@ export default function Resources() {
         { id: 6, title: "Rules and Regulations", section: "events" },
     ]);
 
-    // Resources removal functions, for admin only.
+    // Resources removal functions, for admin only
     const removeResource = (resourceId) => {
         setResources(resources.filter(resource => resource.id !== resourceId));
     };
