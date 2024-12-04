@@ -122,6 +122,7 @@ const Navbar = () => {
     setOpen(false);
     setCurrentPage('/');
     router.push('/');
+    alert(`Successfully logged in${isAdminEmail?' as admin':''}!`);
   };
   
   return (
