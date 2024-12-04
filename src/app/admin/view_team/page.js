@@ -43,7 +43,7 @@ const TeamsPage = () => {
                     <h2 className="text-2xl font-bold mb-4">All ({filteredTeams.length})</h2>
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b border-gray-500">
+                            <tr className="bg-grey text-blue-dark">
                                 <th className="p-4">Team Name</th>
                                 <th className="p-4">Team Code</th>
                                 <th className="p-4">Members</th>
@@ -58,7 +58,7 @@ const TeamsPage = () => {
                                     <td className="p-4">{team.code}</td>
                                     <td className="p-4">{team.members}</td>
                                     <td className="p-4">
-                                        <span className={`px-2 py-1 rounded text-black ${team.submission === 'Submitted' ? 'bg-green-500' : 'bg-orange-500'}`}>
+                                        <span className={`px-2 py-1 rounded text-black ${team.submission === 'Submitted' ? 'bg-green-light' : 'bg-orange-mid'}`}>
                                             {team.submission}
                                         </span>
                                     </td>
@@ -72,10 +72,10 @@ const TeamsPage = () => {
                         </tbody>
                     </table>
                     <div className="flex justify-end mt-4">
-                        <button className="px-3 py-1 mx-1 bg-gray-700 text-white rounded">1</button>
-                        <button className="px-3 py-1 mx-1 bg-gray-700 text-white rounded">2</button>
-                        <button className="px-3 py-1 mx-1 bg-gray-700 text-white rounded">3</button>
-                        <button className="px-3 py-1 mx-1 bg-gray-700 text-white rounded">4</button>
+                        <button className="px-3 py-1 mx-1 bg-grey-dark text-white rounded font-bold">1</button>
+                        <button className="px-3 py-1 mx-1 text-white rounded">2</button>
+                        <button className="px-3 py-1 mx-1 text-white rounded">3</button>
+                        <button className="px-3 py-1 mx-1 text-white rounded">4</button>
                     </div>
                 </div>
             </div>
