@@ -31,9 +31,9 @@ const SubmissionPage = () => {
         <main className="mt-10 bg-blue-800 p-6 rounded-lg shadow-md">
           <div className="mt-8">
             <div className="flex items-center">
-              <span className="font-semibold">Submission Status:</span>
-              <span className="ml-2 px-2 py-1 bg-yellow-300 text-black rounded">
-                <div className="w-24 h-8 flex items-center justify-center bg-yellow-500 rounded">
+              <span className="font-bold text-xl">Submission Status:</span>
+              <span className="ml-2 px-2 py-1 text-black rounded">
+                <div className="w-24 h-8 flex items-center justify-center bg-blue-light text-base font-semibold rounded">
                   {submissionStatus}
                 </div>
               </span>
@@ -41,7 +41,7 @@ const SubmissionPage = () => {
 
             <form className="mt-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium">Team Name:</label>
+                <label className="block text-lg font-semibold">Team Name:</label>
                 <input
                   type="text"
                   className="w-full mt-2 p-2 rounded bg-blue-700 border border-blue-600 focus:ring-2 focus:ring-yellow-300"
@@ -51,7 +51,7 @@ const SubmissionPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium">Category:</label>
+                <label className="block text-lg font-semibold">Category:</label>
                 <select
                   className="w-full mt-2 p-2 rounded bg-blue-700 border border-blue-600 focus:ring-2 focus:ring-yellow-300"
                   value={category}
@@ -66,7 +66,7 @@ const SubmissionPage = () => {
 
               <div className="flex space-x-6">
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium">Proposal:</label>
+                  <label className="block text-lg font-semibold mb-2">Proposal:</label>
                   <div className="border-2 border-dashed border-yellow-300 rounded p-4">
                     <input
                       type="file"
@@ -78,7 +78,7 @@ const SubmissionPage = () => {
                 </div>
 
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium">Pitching Slides:</label>
+                  <label className="block text-lg font-semibold mb-2">Pitching Slides:</label>
                   <div className="border-2 border-dashed border-yellow-300 rounded p-4">
                     <input
                       type="file"
@@ -93,14 +93,14 @@ const SubmissionPage = () => {
               <div className="flex space-x-4">
                 <button
                   type="button"
-                  className="bg-gray-600 px-4 py-2 rounded"
+                  className="bg-grey-dark font-semibold px-4 py-2 rounded"
                   onClick={() => alert('Draft Saved')}
                 >
                   Save
                 </button>
                 <button
                   type="button"
-                  className="bg-blue-500 px-4 py-2 rounded"
+                  className="bg-blue-mid font-semibold px-4 py-2 rounded"
                   onClick={handleSubmit}
                 >
                   Submit
