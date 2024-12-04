@@ -72,16 +72,16 @@ const TeamsPage = () => {
         <div className="min-h-screen bg-blue-900 text-white">
             <TopBanner title="Teams" description="View Registered Teams and Their Submissions Status" />
             <div className="max-w-6xl mx-auto mt-10">
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex justify-between items-center mb-4">
                     <input
                         type="text"
-                        className="w-full max-w-md p-2 rounded bg-white text-black placeholder-gray-500"
+                        className="shadow-inner shadow-2xl w-1/5 p-2 ml-6 rounded bg-blue-mid text-black placeholder-grey"
                         placeholder="Search teams..."
                         value={searchQuery}
                         onChange={handleSearch}
                     />
                 </div>
-                <div className="bg-blue-800 p-6 rounded-lg shadow-md">
+                <div className="bg-blue-dark shadow-2xl p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-bold mb-4">All ({filteredTeams.length})</h2>
                     <table className="w-full text-left">
                         <thead>
@@ -95,7 +95,7 @@ const TeamsPage = () => {
                         </thead>
                         <tbody>
                             {filteredTeams.map((team, index) => (
-                                <tr key={index} className="border-b border-gray-700 cursor-pointer" onClick={() => handleRowClick(team)}>
+                                <tr key={index} className="border-b border-grey-dark cursor-pointer hover:bg-blue-hover transition duration-300 ease-in-out ransform hover:scale-105" onClick={() => handleRowClick(team)}>
                                     <td className="p-4">{team.name}</td>
                                     <td className="p-4">{team.code}</td>
                                     <td className="p-4">{team.members}</td>
