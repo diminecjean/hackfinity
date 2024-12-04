@@ -22,18 +22,18 @@ const SubmissionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white">
+    <div className="min-h-screen bg-blue-dark text-white">
       <TopBanner 
         title="Submission" 
         description="Use this page to submit your final solution for BizMaker. Be sure to double-check all information before submitting!" 
       />
       <div className="max-w-4xl mx-auto">
-        <main className="mt-10 bg-blue-800 p-6 rounded-lg shadow-md">
-          <div className="mt-8">
+        <main className="mt-12 p-6 rounded-lg shadow-2xl">
+          <div className="mt-0">
             <div className="flex items-center">
-              <span className="font-semibold">Submission Status:</span>
-              <span className="ml-2 px-2 py-1 bg-yellow-300 text-black rounded">
-                <div className="w-24 h-8 flex items-center justify-center bg-yellow-500 rounded">
+              <span className="font-bold text-xl">Submission Status:</span>
+              <span className="ml-2 px-2 py-1 text-black rounded">
+                <div className={`w-24 h-8 flex items-center justify-center ${submissionStatus === 'Draft' ? 'bg-red-light' : 'bg-green-light'} text-base font-semibold rounded`}>
                   {submissionStatus}
                 </div>
               </span>
@@ -41,33 +41,33 @@ const SubmissionPage = () => {
 
             <form className="mt-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium">Team Name:</label>
+                <label className="block text-lg font-semibold">Team Name:</label>
                 <input
                   type="text"
-                  className="w-full mt-2 p-2 rounded bg-blue-700 border border-blue-600 focus:ring-2 focus:ring-yellow-300"
+                  className="w-full mt-2 p-2 font-medium rounded bg-grey border border-blue focus:ring-2 focus:ring-yellow-mid text-black"
                   value={teamName}
                   onChange={(e) => setTeamName(e.target.value)}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium">Category:</label>
+                <label className="block text-lg font-semibold">Track:</label>
                 <select
-                  className="w-full mt-2 p-2 rounded bg-blue-700 border border-blue-600 focus:ring-2 focus:ring-yellow-300"
+                  className="w-full mt-2 p-2 font-medium rounded bg-grey-dark border border-blue focus:ring-2 focus:ring-yellow-mid text-black"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
-                  <option value="">Select a category</option>
-                  <option value="category1">Category 1</option>
-                  <option value="category2">Category 2</option>
-                  <option value="category3">Category 3</option>
+                  <option value="">Select a track</option>
+                  <option value="category1">Track 1</option>
+                  <option value="category2">Track 2</option>
+                  <option value="category3">Track 3</option>
                 </select>
               </div>
 
               <div className="flex space-x-6">
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium">Proposal:</label>
-                  <div className="border-2 border-dashed border-yellow-300 rounded p-4">
+                  <label className="block text-lg font-semibold mb-2">Proposal:</label>
+                  <div className="border-2 border-dashed border-blue-light rounded p-4">
                     <input
                       type="file"
                       className="file:mr-4"
@@ -78,8 +78,8 @@ const SubmissionPage = () => {
                 </div>
 
                 <div className="w-1/2">
-                  <label className="block text-sm font-medium">Pitching Slides:</label>
-                  <div className="border-2 border-dashed border-yellow-300 rounded p-4">
+                  <label className="block text-lg font-semibold mb-2">Pitching Slides:</label>
+                  <div className="border-2 border-dashed border-blue-light rounded p-4">
                     <input
                       type="file"
                       className="file:mr-4"
@@ -93,19 +93,19 @@ const SubmissionPage = () => {
               <div className="flex space-x-4">
                 <button
                   type="button"
-                  className="bg-gray-600 px-4 py-2 rounded"
+                  className="bg-red-light font-semibold px-4 py-2 rounded text-black hover:bg-red-mid"
                   onClick={() => alert('Draft Saved')}
                 >
                   Save
                 </button>
-                <button
-                  type="button"
-                  className="bg-blue-500 px-4 py-2 rounded"
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    className="bg-green-light font-semibold px-4 py-2 rounded text-black hover:bg-green-mid"
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
             </form>
           </div>
         </main>
