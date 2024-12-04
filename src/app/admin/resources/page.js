@@ -1,9 +1,10 @@
 "use client";
 import TopBanner from "@/components/custom/top-banner";
 import { useState } from "react";
+import { FaTimes } from 'react-icons/fa';
 
-// Dummy user role, replace with actual user role logic from authentication
-const userRole = "admin"; // This could be "admin" or "user"
+// This is just dummy user role, replace with actual user role logic after we have auth
+const userRole = "admin";
 
 export default function Resources() {
     const [resources, setResources] = useState([
@@ -62,10 +63,10 @@ function Section({ title, resources, isAdmin, onRemove }) {
                         {resource.title}
                         {isAdmin && (
                             <button
-                                className="absolute top-0 right-0 mt-1 mr-1 px-2 py-1 text-xs text-red-500"
+                                className="absolute top-0 right-0 mt-1 mr-1 p-1 text-red-600 bg-red-100 rounded-full hover:bg-red-500 hover:text-white transition duration-300 ease-in-out"
                                 onClick={() => onRemove(resource.id)}
                             >
-                                Remove
+                                <FaTimes size={12} />
                             </button>
                         )}
                     </div>
