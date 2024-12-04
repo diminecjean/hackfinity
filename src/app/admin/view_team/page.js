@@ -61,6 +61,13 @@ const TeamsPage = () => {
         team.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    function handleDownload() {
+        const link = document.createElement('a');
+        link.href = '/documents/sample-document.pdf';
+        link.download = 'sample-document.pdf';
+        link.click();
+    }
+
     return (
         <div className="min-h-screen bg-blue-900 text-white">
             <TopBanner title="Teams" description="View Registered Teams and Their Submissions Status" />
@@ -128,6 +135,24 @@ const TeamsPage = () => {
                                             <span>:</span>
                                             <span className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === 'Submitted' ? 'bg-green-light' : 'bg-orange-mid'}`}>
                                                 {selectedTeam.submission}
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-[140px_10px_auto]">
+                                            <span>Proposal</span>
+                                            <span>:</span>
+                                            <span className="font-bold underline text-blue-light hover:text-blue-mid">    
+                                                <button onClick={handleDownload}>
+                                                    Download Document
+                                                </button>
+                                            </span>
+                                        </div>
+                                        <div className="grid grid-cols-[140px_10px_auto]">
+                                            <span>Pitching Slides</span>
+                                            <span>:</span>
+                                            <span className="font-bold underline text-blue-light hover:text-blue-mid">
+                                                <button onClick={handleDownload}>
+                                                    Download Document
+                                                </button>
                                             </span>
                                         </div>
                                     </div>
