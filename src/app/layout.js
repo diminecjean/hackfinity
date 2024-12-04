@@ -51,7 +51,7 @@ const PortalDialog = ({ children }) => {
 
 const Navbar = () => {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState('');
+  const [currentPage, setCurrentPage] = useState('/');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [navbarVisible, setNavbarVisible] = useState(true);
