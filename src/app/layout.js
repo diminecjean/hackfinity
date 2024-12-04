@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createPortal } from 'react-dom';
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -49,6 +50,7 @@ const PortalDialog = ({ children }) => {
 };
 
 const Navbar = () => {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -118,6 +120,8 @@ const Navbar = () => {
     setIsLoggedIn(true);
     console.log({ isAdmin });
     setOpen(false);
+    setCurrentPage('/');
+    router.push('/');
   };
   
   return (
