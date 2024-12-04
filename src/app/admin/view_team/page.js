@@ -129,9 +129,9 @@ const TeamsPage = () => {
                     </table>
                     <div className="flex justify-end mt-4">
                         <button className="px-3 py-1 mx-1 bg-grey-dark text-white rounded font-bold">1</button>
-                        <button className="px-3 py-1 mx-1 text-white rounded">2</button>
+                        {/* <button className="px-3 py-1 mx-1 text-white rounded">2</button>
                         <button className="px-3 py-1 mx-1 text-white rounded">3</button>
-                        <button className="px-3 py-1 mx-1 text-white rounded">4</button>
+                        <button className="px-3 py-1 mx-1 text-white rounded">4</button> */}
                     </div>
                 </div>
             </div>
