@@ -56,6 +56,7 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [navbarVisible, setNavbarVisible] = useState(true);
   const [prevScrollY, setPrevScrollY] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const navLinks = [
     { href: '/', label: 'Homepage', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
@@ -69,7 +70,6 @@ const Navbar = () => {
     email: '',
     password: ''
   });
-  const [open, setOpen] = useState(false);
 
 
   useEffect(() => {
