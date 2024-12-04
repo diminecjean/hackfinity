@@ -110,15 +110,26 @@ const TeamsPage = () => {
                             <Dialog open={open} onOpenChange={setOpen}>
                                 <PortalDialog>
                                     <DialogHeader>
-                                        <DialogTitle className="text-white font-semibold text-2xl">Team Details</DialogTitle>
-                                        <DialogDescription className="text-white">
-                                            Information about {selectedTeam.name}
-                                        </DialogDescription>
+                                        <DialogTitle className="text-white font-bold ml-4 mt-4 text-4xl">{selectedTeam.name}</DialogTitle>
                                     </DialogHeader>
                                     <div className="grid gap-4 p-4 text-white">
-                                        <p>Team Code: {selectedTeam.code}</p>
-                                        <p>Members: {selectedTeam.members}</p>
-                                        <p>Submission Status: {selectedTeam.submission}</p>
+                                        <div className="grid grid-cols-[140px_10px_auto]">
+                                            <span>Team Code</span>
+                                            <span>:</span>
+                                            <span className="font-bold">{selectedTeam.code}</span>
+                                        </div>
+                                        <div className="grid grid-cols-[140px_10px_auto]">
+                                            <span>Members</span>
+                                            <span>:</span>
+                                            <span className="font-bold">{selectedTeam.members}</span>
+                                        </div>
+                                        <div className="grid grid-cols-[140px_10px_90px]">
+                                            <span>Submission Status</span>
+                                            <span>:</span>
+                                            <span className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === 'Submitted' ? 'bg-green-light' : 'bg-orange-mid'}`}>
+                                                {selectedTeam.submission}
+                                            </span>
+                                        </div>
                                     </div>
                                     <DialogFooter>
                                         <Button onClick={() => setOpen(false)} className="bg-blue-mid text-white px-4 py-2 rounded-xl">Close</Button>
