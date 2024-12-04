@@ -10,7 +10,7 @@ const TeamsPage = () => {
         { name: "Let's Win", code: 'A153TR', members: '3/5', submission: 'Pending' },
         { name: 'Top', code: 'A439GG', members: '5/5', submission: 'Submitted' },
         { name: 'Gummy', code: 'A555JP', members: '4/5', submission: 'Submitted' },
-        { name: 'BizBuzz', code: 'A781UI', members: '3/5', submission: 'Submitted' },
+        { name: 'BizBuzz', code: 'A781UI', members: '3/5', submission: 'Pending' },
         { name: 'Weeee', code: 'A672MP', members: '4/5', submission: 'Submitted' },
         { name: 'Apex', code: 'A222FL', members: '4/5', submission: 'Submitted' },
         { name: 'Big Bang', code: 'A443OIP', members: '5/5', submission: 'Submitted' },

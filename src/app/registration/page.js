@@ -245,9 +245,9 @@ function ConfirmRegistration({ form }) {
       <div><p className="font-semibold text-lg">Thank you for registering for BizMaker!</p></div>
       <div><p className="font-medium text-lg"><br />A confirmation email has been sent to {form.getValues("email")}.</p></div>
       <div className="p-8">
-        {/* TODO:  Need to register current page as landing page so that it reflects on the navbar*/}
+        {/* TODO:  Need to register current page as homepage page so that it reflects on the navbar*/}
         <Link href='/'>
-            <p className="rounded-full px-6 py-4 bg-blue-mid text-white font-semibold">Return to Landing Page</p>
+            <p className="rounded-full px-6 py-4 bg-blue-mid text-white font-semibold">Return to Home Page</p>
         </Link>
       </div>
     </div>
