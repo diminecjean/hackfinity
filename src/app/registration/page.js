@@ -32,8 +32,12 @@ const formSchema = z.object({
     university: z.string().min(1, 'University is required'),
     username: z.string().min(1, 'Username is required'),
     password: z.string().min(1, 'Password is required'),
-    teamname: z.string().min(1, 'Team name is required'),
-    teamcode: z.string().min(1, 'Team code is required'),
+    confirmPassword: z.string().min(1, 'Confirm password is required'),
+    teamname: z.string(),
+    teamcode: z.string(),
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"], // path of error
 });
 
 const styles = {
@@ -41,15 +45,15 @@ const styles = {
     nextButton: "px-6 py-4 font-semibold bg-blue-mid text-white",
 };
 
-const FormFieldComponent = ({ control, name, label, description, placeholder, type = "text" }) => (
+const FormFieldComponent = ({ control, name, label, description, placeholder, type = "text", disabled}) => (
   <FormField
     control={control}
     name={name}
     render={({ field }) => (
       <FormItem>
-        <FormLabel className="text-white text-lg">{label} <span className="text-[#ff0000]">*</span><br/><span className="text-yellow-mid text-sm font-medium">{description}</span></FormLabel>
+        <FormLabel className={`text-white text-lg`}>{label} <span className="text-[#ff0000]">*</span><br/><span className="text-yellow-mid text-sm font-medium">{description}</span></FormLabel>
         <FormControl>
-          <Input placeholder={placeholder} type={type} {...field} />
+          <Input placeholder={placeholder} disabled={disabled} type={type} {...field} />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -79,21 +83,12 @@ function PersonalInformation({ control }) {
             placeholder="Enter your email"
             type="email"
           />
-          <FormItem>
-            <FormLabel className="text-white text-lg pb-2">Country <span className="text-[#ff0000]">*</span></FormLabel>
-            <Controller
-              name="country"
-              control={control}
-              render={({ field }) => (
-                <CountrySelect
-                  {...field}
-                  onChange={(value) => field.onChange(value)}
-                  priorityOptions={["MY"]}
-                  placeholder="Select your country"
-                />
-              )}
-            />
-          </FormItem>
+          <FormFieldComponent
+            control={control}
+            name="country"
+            label="Country"
+            placeholder="Enter your country"
+          />
         </div>
 
         {/* Second Column */}
@@ -109,6 +104,7 @@ function PersonalInformation({ control }) {
             name="phone"
             label="Phone Number"
             placeholder="Enter your phone number"
+            type="tel"
           />
           <FormFieldComponent
             control={control}
@@ -131,9 +127,9 @@ function CreateAccount({ control }) {
       <div className="grid grid-cols-1 gap-6">
         <FormFieldComponent
           control={control}
-          name="username"
-          label="Username"
-          placeholder="Enter your username"
+          name="email"
+          label="Email"
+        //   placeholder="Enter your username"
         />
         <FormFieldComponent
           control={control}
@@ -201,6 +197,7 @@ function RegisterTeam({ control, generateCode, copyCode, teamType, setTeamType }
                   label="Team Code"
                   placeholder="Team Code"
                   description={"Share this code with your team members to join this team."}
+                  disabled={true}
                 />
               </div>
               <div className="col-span-1">
@@ -260,14 +257,15 @@ export default function Registration() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      country: "",
-      university: "",
-      username: "",
+      firstName: "Wei En",
+      lastName: "Looi",
+      email: "looi.weien02@gmail.com",
+      phone: "0135883813",
+      country: "Malaysia",
+      university: "Universiti Sains Malaysia",
+    //   username: "",
       password: "",
+      confirmPassword: "",
       teamname: "",
       teamcode: "",
     }
@@ -320,7 +318,7 @@ export default function Registration() {
                 </Button>
               )}
               {step < 4 && (step !== 3 || teamType !== NONE) && (
-                <Button type="submit" className={styles.nextButton}>
+                <Button type="submit" onClick={onSubmit} className={styles.nextButton}>
                   {step === 3 ? "Sign Up" : "Next →"}
                 </Button>
               )}            
