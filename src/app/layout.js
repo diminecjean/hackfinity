@@ -59,8 +59,9 @@ const Navbar = () => {
     { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
     { href: '/registration', label: 'Registration', showWhenLoggedIn: false, showWhenLoggedOut: true, showWhenAdminLoggedIn: false },
     { href: '/submission', label: 'Submission', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
-    { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
+    { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
     { href: '/admin/view_team', label: 'View Teams', showWhenLoggedIn: false, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
+    { href: '/admin/resources', label: 'Resources', showWhenLoggedIn: false, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
   ];
   const [formData, setFormData] = useState({
     email: '',
