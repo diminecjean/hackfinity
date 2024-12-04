@@ -2,6 +2,7 @@
 import TopBanner from "@/components/custom/top-banner";
 import { useState } from "react";
 import { FaTimes } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 
 // This is just dummy user role, replace with actual user role logic after we have auth
 const userRole = "admin";
@@ -21,6 +22,19 @@ export default function Resources() {
         setResources(resources.filter(resource => resource.id !== resourceId));
     };
 
+    // Add a new resource
+    const addResource = (section) => {
+        const newResourceTitle = prompt("Enter the title of the new resource:");
+        if (newResourceTitle) {
+            const newResource = {
+                id: resources.length + 1, // Temporary ID, consider UUID for production
+                title: newResourceTitle,
+                section: section,
+            };
+            setResources([...resources, newResource]);
+        }
+    };
+
     return (
         <div className="font-[family-name:var(--font-geist-sans)]">
             <TopBanner
@@ -33,29 +47,40 @@ export default function Resources() {
                     resources={resources.filter(res => res.section === "getting-started")}
                     isAdmin={userRole === "admin"}
                     onRemove={removeResource}
+                    onAdd={() => addResource("getting-started")}
                 />
                 <Section
                     title="Toolkits"
                     resources={resources.filter(res => res.section === "toolkits")}
                     isAdmin={userRole === "admin"}
                     onRemove={removeResource}
+                    onAdd={() => addResource("toolkits")}
                 />
                 <Section
                     title="Events"
                     resources={resources.filter(res => res.section === "events")}
                     isAdmin={userRole === "admin"}
                     onRemove={removeResource}
+                    onAdd={() => addResource("events")}
                 />
             </div>
         </div>
     );
 }
 
-function Section({ title, resources, isAdmin, onRemove }) {
+function Section({ title, resources, isAdmin, onRemove, onAdd }) {
     return (
         <section id={title.toLowerCase().replace(" ", "-")}>
-            <div className="w-full bg-blue-mid px-24 py-4">
+            <div className="w-full bg-blue-mid px-24 py-4 flex justify-between items-center">
                 <h1 className="text-2xl font-semibold">{title}</h1>
+                {isAdmin && (
+                    <button
+                        className="text-blue-light bg-blue-dark px-5 py-2 rounded-full hover:bg-green-mid hover:text-white transition duration-300 ease-in-out ransform hover:scale-110"
+                        onClick={onAdd}
+                    >
+                        <FaPlus size={20} />
+                    </button>
+                )}
             </div>
             <div className="my-12 mx-24 flex gap-12 justify-start">
                 {resources.map(resource => (
@@ -63,7 +88,7 @@ function Section({ title, resources, isAdmin, onRemove }) {
                         {resource.title}
                         {isAdmin && (
                             <button
-                                className="absolute top-0 right-0 mt-1 mr-1 p-1 text-red-600 bg-red-100 rounded-full hover:bg-red-500 hover:text-white transition duration-300 ease-in-out"
+                                className="absolute top-0 right-0 mt-1 mr-1 p-0.5 text-white bg-red-mid rounded-full hover:bg-red-mid hover:bg-red-hover transition duration-300 ease-in-out ransform hover:scale-110"
                                 onClick={() => onRemove(resource.id)}
                             >
                                 <FaTimes size={12} />
