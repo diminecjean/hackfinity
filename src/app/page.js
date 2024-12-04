@@ -66,23 +66,23 @@ export default function Home() {
         </div>
       </div>
       
-      <div className="w-full py-16 px-8 sm:px-18 md:px-24 flex flex-col gap-16">
+      <div className="w-full py-16 px-8 sm:px-18 md:px-48 flex flex-col gap-16">
         <section id="about" className="flex flex-col md:flex-row justify-between p-16 gap-16">
           <div className="text-white align-middle">
-            <h1 className="py-2 font-bold text-5xl">
+            <h1 className="py-2 font-bold text-4xl">
               What is <span className="underline">BizMaker</span>?
             </h1>
-            <p className="py-2 text-xl font-medium leading-relaxed">
+            <p className="py-2 text-lg font-medium leading-relaxed">
               BizMaker is an annual event organized by the Management Society, USM to provide students with a platform to improve the skills and expertise required in the business and entrepreneurship fields. Are you a novice in entrepreneurship?
             </p>
           </div>
-          <Image src={asset1} alt="picture" className="object-contain w-180 h-54" />
+          <Image src={asset1} alt="picture" className="object-contain w-140 h-45" />
         </section>
       
         <section id="challenge" className="align-center text-center justify-center">
           <h1 className="font-bold text-5xl text-white">Business Challenge & Instructions</h1>
           <div className="mx-16 my-8 py-16 px-12 rounded-2xl bg-blue-light">
-            <p className="font-semibold text-xl leading-relaxed">
+            <p className="font-semibold text-lg leading-relaxed">
               Participants are required to propose a revolutionary business idea with the integration of digital technology for Malaysian end consumers living in a post-pandemic era. Digital transformation is the integration of digital technology into all areas of a business, fundamentally changing how companies operate and deliver value to customers. Participants may choose to develop their digitally transformed business ideas in any of the three areas listed in the following.
             </p>
           </div>
@@ -92,23 +92,23 @@ export default function Home() {
           <h1 className="font-bold text-5xl text-white">Problem Tracks</h1>
           <div className="flex flex-col md:flex-row gap-16 mx-16 justify-center py-8">
             <div className="py-16 px-12 rounded-2xl bg-blue-mid">
-              <h1 className="font-semibold text-2xl">Track 1</h1>
-              <p className="pt-4 font-bold text-2xl md:text-4xl text-white">Health and Wellness</p>
+              <h1 className="font-semibold text-lg">Track 1</h1>
+              <p className="pt-4 font-bold text-xl md:text-2xl text-white">Health and Wellness</p>
             </div>
             <div className="py-16 px-12 rounded-2xl bg-blue-mid">
-              <h1 className="font-semibold text-2xl">Track 2</h1>
-              <p className="pt-4 font-bold text-2xl md:text-4xl text-white">Food Consumption Safety</p>
+              <h1 className="font-semibold text-lg">Track 2</h1>
+              <p className="pt-4 font-bold text-2xl md:text-2xl text-white">Food Consumption Safety</p>
             </div>
             <div className="py-16 px-12 rounded-2xl bg-blue-mid">
-              <h1 className="font-semibold text-2xl">Track 3</h1>
-              <p className="pt-4 font-bold text-2xl md:text-4xl text-white">Education and Learning</p>
+              <h1 className="font-semibold text-lg">Track 3</h1>
+              <p className="pt-4 font-bold text-2xl md:text-2xl text-white">Education and Learning</p>
             </div>
           </div>
         </section>
 
         <section id="timeline" className="align-center text-center justify-center">
           <h1 className="font-bold text-5xl text-white">Timeline</h1>   
-          <div className="rounded-3xl bg-black mx-12 sm:mx-32 md:mx-64 my-8">
+          <div className="rounded-3xl bg-black mx-22 sm:mx-32 md:mx-96 my-8">
             <Timeline data={timelineData} />
           </div>
         </section>

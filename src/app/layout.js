@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { createPortal } from 'react-dom';
+import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -49,14 +50,16 @@ const PortalDialog = ({ children }) => {
 };
 
 const Navbar = () => {
-  const [currentPage, setCurrentPage] = useState('');
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState('/');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [navbarVisible, setNavbarVisible] = useState(true);
   const [prevScrollY, setPrevScrollY] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const navLinks = [
-    { href: '/', label: 'Landing', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
+    { href: '/', label: 'Homepage', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
     { href: '/registration', label: 'Registration', showWhenLoggedIn: false, showWhenLoggedOut: true, showWhenAdminLoggedIn: false },
     { href: '/submission', label: 'Submission', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
     { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
@@ -67,7 +70,6 @@ const Navbar = () => {
     email: '',
     password: ''
   });
-  const [open, setOpen] = useState(false);
 
 
   useEffect(() => {
@@ -118,6 +120,9 @@ const Navbar = () => {
     setIsLoggedIn(true);
     console.log({ isAdmin });
     setOpen(false);
+    setCurrentPage('/');
+    router.push('/');
+    alert(`Successfully logged in${isAdminEmail?' as admin':''}!`);
   };
   
   return (
@@ -125,9 +130,9 @@ const Navbar = () => {
     // Probably need to pass the user role to other components across different pages to conditionally render stuff 
     // (like the + button in resources.)
     <>
-      <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-lg z-50 rounded-full transition-transform duration-300 ${navbarVisible ? 'translate-y-0' : '-translate-y-[200%]'} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
+      <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-xl z-50 rounded-full transition-transform duration-300 ${navbarVisible ? 'translate-y-0' : '-translate-y-[200%]'} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
         <div className="mx-auto flex justify-center items-center">
-          <div className="hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-semibold sm:text-md md:text-lg">
+          <div className="text-white hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-bold sm:text-md md:text-lg">
             {navLinks
               .filter(link => {
                 if (isAdmin) {
@@ -136,7 +141,7 @@ const Navbar = () => {
                 return isLoggedIn ? link.showWhenLoggedIn : link.showWhenLoggedOut;
               })
               .map(link => (
-                <div key={link.href} className={`flex items-center hover:underline ${currentPage === link.href ? 'underline' : ''}`}>
+                <div key={link.href} className={`flex items-center hover:underline ${currentPage === link.href ? 'underline text-black' : ''}`}>
                   <Link href={link.href}>
                     <p onClick={() => setCurrentPage(link.href)}>{link.label}</p>
                   </Link>
@@ -259,7 +264,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-blue-dark`}
       >
-        <div className="flex justify-center m-8 absolute w-full">
+        <div className="flex justify-center absolute w-full">
           <Navbar />
         </div>
         {children}
