@@ -79,14 +79,14 @@ const TeamsPage = () => {
                     </div>
                 </div>
             </div>
-            <footer className="mt-10 text-center">
+            {/* <footer className="mt-10 text-center">
                 <div className="flex justify-center space-x-6">
                     <span>BizMaker 2024</span>
                     <span>@bizmaker_2024</span>
                     <span>usm.bizmaker@gmail.com</span>
                 </div>
                 <p className="mt-4">@ 2024 USM SOM Management Society</p>
-            </footer>
+            </footer> */}
         </div>
     );
 };
