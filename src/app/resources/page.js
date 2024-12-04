@@ -14,8 +14,8 @@ export default function Resources(){
                         <h1 className="text-2xl font-semibold">Getting Started</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Onboarding Guide</div>
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Rules and Regulations</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Onboarding Guide</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Rules and Regulations</div>
                     </div>
                 </section>
 
@@ -24,8 +24,8 @@ export default function Resources(){
                         <h1 className="text-2xl font-semibold">Toolkits</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Onboarding Guide</div>
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Rules and Regulations</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Onboarding Guide</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Rules and Regulations</div>
                     </div>
                 </section>
 
@@ -34,8 +34,8 @@ export default function Resources(){
                         <h1 className="text-2xl font-semibold">Events</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Onboarding Guide</div>
-                        <div className="rounded-xl bg-yellow-mid px-8 py-4 font-medium">Rules and Regulations</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Onboarding Guide</div>
+                        <div className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark">Rules and Regulations</div>
                     </div>
                 </section>
                     
