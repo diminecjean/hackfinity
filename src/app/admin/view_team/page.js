@@ -27,7 +27,7 @@ const TeamsPage = () => {
     );
 
     return (
-        <div className="min-h-screen bg-blue-900 text-white p-8">
+        <div className="min-h-screen bg-blue-900 text-white">
             <TopBanner title="Teams" description="View Registered Teams and Their Submissions Status" />
             <div className="max-w-6xl mx-auto mt-10">
                 <div className="flex justify-between items-center mb-6">
