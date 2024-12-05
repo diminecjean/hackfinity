@@ -25,14 +25,33 @@ export default function Resources() {
     // Add a new resource
     const addResource = (section) => {
         const newResourceTitle = prompt("Enter the title of the new resource:");
-        if (newResourceTitle) {
-            const newResource = {
-                id: resources.length + 1, // Temporary ID, consider UUID for production
-                title: newResourceTitle,
-                section: section,
-            };
-            setResources([...resources, newResource]);
-        }
+        
+        // Create a hidden input element to select a file
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = '.pdf,.doc,.docx,.txt'; // Limit file types (optional)
+        
+        // Listen for file selection
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            
+            if (newResourceTitle && file) {
+                const newResource = {
+                    id: resources.length + 1, // Temporary ID, consider UUID for production
+                    title: newResourceTitle,
+                    section: section,
+                    document: file,
+                };
+
+                // You can also add logic here to upload the file to a server or cloud storage.
+                
+                setResources([...resources, newResource]);
+                alert(`Resource "${newResourceTitle}" with document "${file.name}" added successfully!`);
+            }
+        };
+
+        // Trigger the file selection dialog
+        fileInput.click();
     };
 
     return (
