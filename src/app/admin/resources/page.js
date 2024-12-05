@@ -11,10 +11,11 @@ export default function Resources() {
     const [resources, setResources] = useState([
         { id: 1, title: "Onboarding Guide", section: "getting-started" },
         { id: 2, title: "Rules and Regulations", section: "getting-started" },
-        { id: 3, title: "Onboarding Guide", section: "toolkits" },
-        { id: 4, title: "Rules and Regulations", section: "toolkits" },
-        { id: 5, title: "Onboarding Guide", section: "events" },
-        { id: 6, title: "Rules and Regulations", section: "events" },
+        { id: 3, title: "BizPlanning Guideline", section: "toolkits" },
+        { id: 4, title: "Model Canvas", section: "toolkits" },
+        { id: 5, title: "Judging Criteria", section: "toolkits" },
+        { id: 6, title: "Mentoring Session", section: "events" },
+        { id: 7, title: "Workshop Calendar", section: "events" },
     ]);
 
     // Resources removal functions, for admin only

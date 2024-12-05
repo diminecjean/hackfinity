@@ -1,6 +1,7 @@
 "use client";
 import TopBanner from "@/components/custom/top-banner";
 import path from 'path';
+import Link from "next/link";
 
 function handleDownload(fileName, displayName) {
     const link = document.createElement('a');
@@ -24,18 +25,20 @@ export default function Resources() {
                         <h1 className="text-2xl font-semibold">Getting Started</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Biz_Planning_Guideline.pdf', 'Biz Planning Guideline.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/Ee7hF5LnFiZDjMfeUODJj3ABiJ8J1FNW_TuZfXUd3vxy4Q?e=sDVdy9"}
+                            // onClick={() => handleDownload('Biz_Planning_Guideline.pdf', 'Biz Planning Guideline.pdf')}
                         >
                             Onboarding Guide
-                        </div>
-                        <div
+                        </Link>
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/EfLy1un-bL5Cky5C2oDTl0wBEUTOEE_dwA0Q2IPQIIZUpQ?e=hLXjeI"}
+                            // onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
                         >
                             Rules and Regulations
-                        </div>
+                        </Link>
                     </div>
                 </section>
 
@@ -44,18 +47,27 @@ export default function Resources() {
                         <h1 className="text-2xl font-semibold">Toolkits</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Onboarding_Guide.pdf', 'Onboarding Guide.pdf')}
+                            // onClick={() => handleDownload('Onboarding_Guide.pdf', 'Onboarding Guide.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/EV1_Sej4hXFOjthWtP3bWK0B-AL0OYV7By_w4hcsKVExxQ?e=PpHnx3"}
                         >
-                            Onboarding Guide
-                        </div>
-                        <div
+                            BizPlanning Guideline
+                        </Link>
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
+                            // onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/EQnO7g_jRvdAo-6agqT3K_cBCAleoZ0x2kury82J9gk9Mg?e=RhneiD"}
                         >
-                            Rules and Regulations
-                        </div>
+                            Model Canvas
+                        </Link>
+                        <Link
+                            className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
+                            // onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/EaXMsc2cYFRCuYhtlajNKAcBES1LapPjY4oDEYXeoRjKTg?e=10U12h"}
+                        >
+                            Judging Criteria
+                        </Link>
                     </div>
                 </section>
 
@@ -64,18 +76,20 @@ export default function Resources() {
                         <h1 className="text-2xl font-semibold">Events</h1>
                     </div>
                     <div className="my-12 mx-24 flex gap-12 justify-start">
-                        <div
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Onboarding_Guide.pdf', 'Onboarding Guide.pdf')}
+                            // onClick={() => handleDownload('Onboarding_Guide.pdf', 'Onboarding Guide.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/ERh639TUg3pAgXOlcV8tdDgB3aZgUIiJ_Ou58ceXHQVdDg?e=2A16a1"}
                         >
-                            Onboarding Guide
-                        </div>
-                        <div
+                            Mentoring Session
+                        </Link>
+                        <Link
                             className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                            onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
+                            href={"https://1drv.ms/b/c/a1218d0c38262d8e/ETR_HRh-MM9Do7z7IP-SPmkBUt3FAzTQKms6j3cEbqOVpA?e=iP0bvy"}
+                            // onClick={() => handleDownload('Rules_and_Regulations.pdf', 'Rules and Regulations.pdf')}
                         >
-                            Rules and Regulations
-                        </div>
+                            Workshop Calendar
+                        </Link>
                     </div>
                 </section>
             </div>
