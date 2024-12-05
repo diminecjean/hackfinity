@@ -75,10 +75,10 @@ function Section({ title, resources, isAdmin, onRemove, onAdd }) {
                 <h1 className="text-2xl font-semibold">{title}</h1>
                 {isAdmin && (
                     <button
-                        className="text-blue-light bg-blue-dark px-5 py-2 rounded-full hover:bg-green-mid hover:text-white transition duration-300 ease-in-out ransform hover:scale-110"
+                        className="text-blue-light font-normal bg-blue-dark px-4 py-2 rounded-full hover:bg-green-mid hover:text-white transition duration-300 ease-in-out ransform hover:scale-105"
                         onClick={onAdd}
                     >
-                        <FaPlus size={20} />
+                        + Create
                     </button>
                 )}
             </div>
