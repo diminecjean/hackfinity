@@ -5,6 +5,38 @@ import logo from "@/../public/logo.svg";
 import asset1 from "@/../public/asset-1.svg";
 import { Timeline } from "@/components/ui/timeline";
 
+// import { supabase } from '@/lib/supabase'
+
+// const fetchUsers = async () => {
+//   try {
+//     // Check if table exists and show row count
+//     const { count, error: countError } = await supabase
+//       .from('Admin')
+//       .select('*', { count: 'exact', head: true })
+    
+//     console.log('Table row count:', count)
+    
+//     const { data, error } = await supabase
+//       .from('Admin')
+//       .select('*')
+
+//     console.log('fetch users data');
+    
+//     if (error) throw error
+//     return data
+    
+//   } catch (error) {
+//     console.error('Error:', error)
+//     return null
+//   }
+// }
+
+// const users = await fetchUsers()
+
+// if (users) {
+//   console.log({users})
+// }
+
 const TimelineContent = ({ text }) => (
   <div className="bg-yellow-mid p-16 rounded-2xl text-black">
     <h1 className="text-2xl font-semibold">{text}</h1>
