@@ -31,6 +31,10 @@ const formSchema = z.object({
     phone: z.string().min(1, 'Phone number is required'),
     country: z.string().min(1, 'Country is required'),
     university: z.string().min(1, 'University is required'),
+    password: z.string().min(1, 'Password is required'),
+    confirmPassword: z.string().min(1, 'Confirm password is required'),
+    teamname: z.string(),
+    teamcode: z.string(),
 }).refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"], // path of error
