@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CountrySelect from "./country-select";
+import { createClient } from "@/utils/supabase/component";
 
 const NEW_TEAM = "newTeam";
 const EXISTING_TEAM = "existingTeam";
@@ -30,7 +31,6 @@ const formSchema = z.object({
     phone: z.string().min(1, 'Phone number is required'),
     country: z.string().min(1, 'Country is required'),
     university: z.string().min(1, 'University is required'),
-    username: z.string().min(1, 'Username is required'),
     password: z.string().min(1, 'Password is required'),
     confirmPassword: z.string().min(1, 'Confirm password is required'),
     teamname: z.string(),
@@ -254,16 +254,17 @@ function ConfirmRegistration({ form }) {
 export default function Registration() {
   const [step, setStep] = useState(1);
   const [teamType, setTeamType] = useState(NONE);
+  const supabase = createClient();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "Wei En",
-      lastName: "Looi",
-      email: "looi.weien02@gmail.com",
-      phone: "0135883813",
-      country: "Malaysia",
-      university: "Universiti Sains Malaysia",
-    //   username: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      country: "",
+      university: "",
       password: "",
       confirmPassword: "",
       teamname: "",
@@ -288,9 +289,27 @@ export default function Registration() {
     });
   }
 
-  function onSubmit(values) {
-    console.log(values);
-    handleNext();
+  async function onSubmit(values) {
+    if (step === 3) {
+      try {
+        console.log("Submitted values:", values);
+        const { email, password } = values;
+        console.log(email);
+        console.log(password);
+        const { error } = await supabase.auth.signUp({ email, password });
+        if (error) {
+          console.error(error);
+          alert("Failed to register. Please try again.");
+        } else {
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      }
+    }
+    else {
+      handleNext();
+      console.log(values);
+    }
   }
 
   return (
@@ -318,7 +337,10 @@ export default function Registration() {
                 </Button>
               )}
               {step < 4 && (step !== 3 || teamType !== NONE) && (
-                <Button type="submit" onClick={onSubmit} className={styles.nextButton}>
+                <Button
+                  type={step === 3 ? "submit" : "button"} 
+                  onClick={step === 3 ? undefined : handleNext}
+                  className={styles.nextButton}>
                   {step === 3 ? "Sign Up" : "Next →"}
                 </Button>
               )}            
