@@ -286,7 +286,6 @@ export default function Registration() {
   }
 
   async function onSubmit(values) {
-    
     if (step === 3) {
       try {
         console.log("Submitted values:", values);
@@ -334,7 +333,10 @@ export default function Registration() {
                 </Button>
               )}
               {step < 4 && (step !== 3 || teamType !== NONE) && (
-                <Button type="submit" className={styles.nextButton}>
+                <Button
+                  type={step === 3 ? "submit" : "button"} 
+                  onClick={step === 3 ? undefined : handleNext}
+                  className={styles.nextButton}>
                   {step === 3 ? "Sign Up" : "Next →"}
                 </Button>
               )}            
