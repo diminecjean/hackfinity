@@ -31,8 +31,17 @@ const formSchema = z.object({
     phone: z.string().min(1, 'Phone number is required'),
     country: z.string().min(1, 'Country is required'),
     university: z.string().min(1, 'University is required'),
-    password: z.string().min(1, 'Password is required'),
-    confirmPassword: z.string().min(1, 'Confirm password is required'),
+    // Password requirements validation to ensure password conforms to supabase auth requirements
+    password: z
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character'
+      ),
+    confirmPassword: z
+      .string()
+      .min(8, 'Password must be at least 8 characters'),,
     teamname: z.string(),
     teamcode: z.string(),
 }).refine(data => data.password === data.confirmPassword, {
