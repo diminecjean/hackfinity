@@ -25,8 +25,8 @@ const EXISTING_TEAM = "existingTeam";
 const NONE = "none";
 
 const formSchema = z.object({
-    firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
+    first_name: z.string().min(1, 'First name is required'),
+    last_name: z.string().min(1, 'Last name is required'),
     email: z.string().email('Invalid email address'),
     phone: z.string().min(1, 'Phone number is required'),
     country: z.string().min(1, 'Country is required'),
@@ -72,7 +72,7 @@ function PersonalInformation({ control }) {
         <div className="space-y-6">
           <FormFieldComponent
             control={control}
-            name="firstName"
+            name="first_name"
             label="First Name"
             placeholder="Enter your first name"
           />
@@ -95,7 +95,7 @@ function PersonalInformation({ control }) {
         <div className="space-y-6">
           <FormFieldComponent
             control={control}
-            name="lastName"
+            name="last_name"
             label="Last Name"
             placeholder="Enter your last name"
           />
@@ -150,7 +150,7 @@ function CreateAccount({ control }) {
   );
 }
 
-function RegisterTeam({ control, generateCode, copyCode, teamType, setTeamType }) {
+function RegisterTeam({ control, generateCode, copyCode, teamType, setTeam, codeGenerated }) {
   return (
     <div className="max-w-4xl w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input text-white">
       <h2 className="font-bold text-xl mb-6">
@@ -160,10 +160,10 @@ function RegisterTeam({ control, generateCode, copyCode, teamType, setTeamType }
       {teamType === NONE && (
         <>
           <div className="space-y-6">
-            <Button onClick={() => setTeamType(NEW_TEAM)} className="text-xl p-8 w-full bg-yellow-dark">
+            <Button onClick={() => setTeam(NEW_TEAM)} className="text-xl p-8 w-full bg-yellow-dark">
               Create a New Team
             </Button>
-            <Button onClick={() => setTeamType(EXISTING_TEAM)} className="text-xl p-8 w-full bg-blue-mid">
+            <Button onClick={() => setTeam(EXISTING_TEAM)} className="text-xl p-8 w-full bg-blue-mid">
               Join an Existing Team
             </Button>
           </div>
@@ -180,20 +180,20 @@ function RegisterTeam({ control, generateCode, copyCode, teamType, setTeamType }
               <div className="col-span-3">
                 <FormFieldComponent
                   control={control}
-                  name="teamname"
+                  name="team_name"
                   label="Team Name"
                   placeholder="Enter your team name."
                 />
               </div>
               <div className="col-span-1">
-                <Button onClick={generateCode} type="button" className="w-full bg-yellow-dark">Generate Code</Button>
+                <Button onClick={generateCode} disabled={codeGenerated} type="button" className="w-full bg-yellow-dark">Generate Code</Button>
               </div>
             </div>
             <div className="grid grid-cols-4 justify-between items-end gap-4">
               <div className="col-span-3">
                 <FormFieldComponent
                   control={control}
-                  name="teamcode"
+                  name="team_code"
                   label="Team Code"
                   placeholder="Team Code"
                   description={"Share this code with your team members to join this team."}
@@ -218,7 +218,7 @@ function RegisterTeam({ control, generateCode, copyCode, teamType, setTeamType }
               <div className="col-span-4">
                 <FormFieldComponent
                   control={control}
-                  name="teamcode"
+                  name="team_code"
                   label="Team Code"
                   placeholder="Team Code"
                   description={"Enter the team code provided by your team leader."}
@@ -254,34 +254,51 @@ function ConfirmRegistration({ form }) {
 export default function Registration() {
   const [step, setStep] = useState(1);
   const [teamType, setTeamType] = useState(NONE);
+  const [codeGenerated, setCodeGenerated] = useState(false);
   const supabase = createClient();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      country: "",
-      university: "",
-      password: "",
-      confirmPassword: "",
-      teamname: "",
-      teamcode: "",
+      first_name: "Wei En",
+      last_name: "Looi",
+      email: "looi.weien02@gmail.com",
+      phone: "0135883813",
+      country: "Malaysia",
+      university: "shit",
+      // password: "P@ssw0rd",
+      // confirmPassword: "P@ssw0rd",
+      password: "sdf",
+      confirmPassword: "sdf",
+      team_name: "",
+      team_code: "",
+      role: "",
     }
   });
 
   const handleNext = () => setStep(step + 1);
   const handlePrevious = () => setStep(step - 1);
 
+  function setTeam(teamType) {
+    setTeamType(teamType);
+    if (teamType === NEW_TEAM){
+      form.role = "leader"
+    } else if (teamType === EXISTING_TEAM) {
+      form.role = "member"
+    } else {
+      form.role = ""
+    }
+  }
+
   function generateCode() {
     const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    form.setValue("teamcode", newCode);
+    form.setValue("team_code", newCode);
+    setCodeGenerated(true);
   }
 
   function copyCode() {
-    const code = form.getValues("teamcode");
+    const code = form.getValues("team_code");
     navigator.clipboard.writeText(code).then(() => {
       alert("Team code copied to clipboard!");
     }).catch(err => {
@@ -289,26 +306,71 @@ export default function Registration() {
     });
   }
 
-  async function onSubmit(values) {
-    if (step === 3) {
-      try {
-        console.log("Submitted values:", values);
-        const { email, password } = values;
-        console.log(email);
-        console.log(password);
-        const { error } = await supabase.auth.signUp({ email, password });
-        if (error) {
-          console.error(error);
-          alert("Failed to register. Please try again.");
-        } else {
-        }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-      }
+  async function insertParticipant(user, values) {
+    const { data, error } = await supabase
+      .from('Participants')
+      .insert([{
+        participant_id: user.id,
+        email: values.email,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        phone: values.phone,
+        country: values.country,
+        university: values.university,
+        team_code: values.team_code,
+        role: values.role
+      }]);
+  
+    if (error){
+      console.error('Failed to create participant profile:', error);
+      throw new Error('Failed to create participant profile');
+    } 
+    return data;
+  }
+  
+  async function insertTeam(values) {
+    const { data, error } = await supabase
+      .from('Team')
+      .insert([{
+        team_name: values.team_name,
+        team_code: values.team_code
+      }]);
+  
+    if (error) {
+      console.log('Failed to create team:', error);
+      throw new Error('Failed to create team');
     }
-    else {
+    return data;
+  }
+  
+  async function onSubmit(values) {
+    if (step !== 3) {
       handleNext();
-      console.log(values);
+      return;
+    }
+  
+    try {
+      // Step 1: Create auth user
+      const { error, user } = await supabase.auth.signUp({ 
+        email: values.email, 
+        password: values.password 
+      });
+      if (error) throw new Error('Failed to create user account');
+  
+      // Step 2: Create participant profile
+      await insertParticipant(user, values);
+  
+      // Step 3: Create team if leader, leader indicates new team
+      if (values.role === "leader") {
+        await insertTeam(values);
+      }
+  
+      // Success - move to next step
+      handleNext();
+  
+    } catch (err) {
+      console.error('Registration error:', err);
+      alert(err.message || 'Registration failed. Please try again.');
     }
   }
 
@@ -327,12 +389,12 @@ export default function Registration() {
             <div className="grow">
               {step === 1 && <PersonalInformation control={form.control} />}
               {step === 2 && <CreateAccount control={form.control} />}
-              {step === 3 && <RegisterTeam control={form.control} generateCode={generateCode} copyCode={copyCode} teamType={teamType} setTeamType={setTeamType} />}
+              {step === 3 && <RegisterTeam control={form.control} generateCode={generateCode} copyCode={copyCode} teamType={teamType} setTeam={setTeam} form={form} codeGenerated={codeGenerated}/>}
               {step === 4 && <ConfirmRegistration form={form} />}
             </div>
             <div className="max-w-4xl w-full mx-auto p-4 md:p-8 flex justify-between">
               {step > 1 && (step < 4) && (
-                <Button type="button" onClick={teamType === NONE ? handlePrevious : () => setTeamType(NONE)} className={styles.previousButton}>
+                <Button type="button" onClick={teamType === NONE ? handlePrevious : () => setTeam(NONE)} className={styles.previousButton}>
                   Previous
                 </Button>
               )}
