@@ -5,5 +5,5 @@ const words = `Oxygen gets you high. In a catastrophic emergency, we're taking g
 `;
 
 export default function TextGenerateEffectDemo() {
-  return <TextGenerateEffect words={words} />;
+    return <TextGenerateEffect words={words} />;
 }
