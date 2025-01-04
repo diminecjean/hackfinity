@@ -1,0 +1,53 @@
+{
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "bgColor": "bg-blue-mid",
+      "resources": [
+        {
+          "title": "Onboarding Guide",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/Ee7hF5LnFiZDjMfeUODJj3ABiJ8J1FNW_TuZfXUd3vxy4Q?e=sDVdy9"
+        },
+        {
+          "title": "Rules and Regulations",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/EfLy1un-bL5Cky5C2oDTl0wBEUTOEE_dwA0Q2IPQIIZUpQ?e=hLXjeI"
+        }
+      ]
+    },
+    {
+      "id": "toolkits",
+      "title": "Toolkits",
+      "bgColor": "bg-blue-light",
+      "resources": [
+        {
+          "title": "BizPlanning Guideline",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/EV1_Sej4hXFOjthWtP3bWK0B-AL0OYV7By_w4hcsKVExxQ?e=PpHnx3"
+        },
+        {
+          "title": "Model Canvas",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/EQnO7g_jRvdAo-6agqT3K_cBCAleoZ0x2kury82J9gk9Mg?e=RhneiD"
+        },
+        {
+          "title": "Judging Criteria",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/EaXMsc2cYFRCuYhtlajNKAcBES1LapPjY4oDEYXeoRjKTg?e=10U12h"
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "bgColor": "bg-blue-mid",
+      "resources": [
+        {
+          "title": "Mentoring Session",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/ERh639TUg3pAgXOlcV8tdDgB3aZgUIiJ_Ou58ceXHQVdDg?e=2A16a1"
+        },
+        {
+          "title": "Workshop Calendar",
+          "href": "https://1drv.ms/b/c/a1218d0c38262d8e/ETR_HRh-MM9Do7z7IP-SPmkBUt3FAzTQKms6j3cEbqOVpA?e=iP0bvy"
+        }
+      ]
+    }
+  ]
+}

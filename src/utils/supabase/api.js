@@ -1,4 +1,4 @@
-import { createServerClient, serializeCookieHeader } from '@supabase/ssr';
+import { createServerClient, serializeCookieHeader } from "@supabase/ssr";
 
 export default function createClient(req, res) {
   const supabase = createServerClient(
@@ -7,18 +7,21 @@ export default function createClient(req, res) {
     {
       cookies: {
         getAll() {
-          return Object.keys(req.cookies).map((name) => ({ name, value: req.cookies[name] || '' }));
+          return Object.keys(req.cookies).map((name) => ({
+            name,
+            value: req.cookies[name] || "",
+          }));
         },
         setAll(cookiesToSet) {
           res.setHeader(
-            'Set-Cookie',
+            "Set-Cookie",
             cookiesToSet.map(({ name, value, options }) =>
-              serializeCookieHeader(name, value, options)
-            )
+              serializeCookieHeader(name, value, options),
+            ),
           );
         },
       },
-    }
+    },
   );
 
   return supabase;

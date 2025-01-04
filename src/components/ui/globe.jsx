@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
 import ThreeGlobe from "three-globe";
@@ -14,10 +14,7 @@ const cameraZ = 300;
 
 let numbersOfRings = [0];
 
-export function Globe({
-  globeConfig,
-  data
-}) {
+export function Globe({ globeConfig, data }) {
   const [globeData, setGlobeData] = useState(null);
 
   const globeRef = useRef(null);
@@ -79,9 +76,10 @@ export function Globe({
     }
 
     // remove duplicates for same lat and lng
-    const filteredPoints = points.filter((v, i, a) =>
-      a.findIndex((v2) =>
-        ["lat", "lng"].every((k) => v2[k] === v[k])) === i);
+    const filteredPoints = points.filter(
+      (v, i, a) =>
+        a.findIndex((v2) => ["lat", "lng"].every((k) => v2[k] === v[k])) === i,
+    );
 
     setGlobeData(filteredPoints);
   };
@@ -107,25 +105,25 @@ export function Globe({
 
     globeRef.current
       .arcsData(data)
-      .arcStartLat((d) => (d).startLat * 1)
-      .arcStartLng((d) => (d).startLng * 1)
-      .arcEndLat((d) => (d).endLat * 1)
-      .arcEndLng((d) => (d).endLng * 1)
-      .arcColor((e) => (e).color)
+      .arcStartLat((d) => d.startLat * 1)
+      .arcStartLng((d) => d.startLng * 1)
+      .arcEndLat((d) => d.endLat * 1)
+      .arcEndLng((d) => d.endLng * 1)
+      .arcColor((e) => e.color)
       .arcAltitude((e) => {
-        return (e).arcAlt * 1;
+        return e.arcAlt * 1;
       })
       .arcStroke((e) => {
         return [0.32, 0.28, 0.3][Math.round(Math.random() * 2)];
       })
       .arcDashLength(defaultProps.arcLength)
-      .arcDashInitialGap((e) => (e).order * 1)
+      .arcDashInitialGap((e) => e.order * 1)
       .arcDashGap(15)
       .arcDashAnimateTime((e) => defaultProps.arcTime);
 
     globeRef.current
       .pointsData(data)
-      .pointColor((e) => (e).color)
+      .pointColor((e) => e.color)
       .pointsMerge(true)
       .pointAltitude(0.0)
       .pointRadius(2);
@@ -135,7 +133,9 @@ export function Globe({
       .ringColor((e) => (t) => e.color(t))
       .ringMaxRadius(defaultProps.maxRings)
       .ringPropagationSpeed(RING_PROPAGATION_SPEED)
-      .ringRepeatPeriod((defaultProps.arcTime * defaultProps.arcLength) / defaultProps.rings);
+      .ringRepeatPeriod(
+        (defaultProps.arcTime * defaultProps.arcLength) / defaultProps.rings,
+      );
   };
 
   useEffect(() => {
@@ -143,9 +143,15 @@ export function Globe({
 
     const interval = setInterval(() => {
       if (!globeRef.current || !globeData) return;
-      numbersOfRings = genRandomNumbers(0, data.length, Math.floor((data.length * 4) / 5));
+      numbersOfRings = genRandomNumbers(
+        0,
+        data.length,
+        Math.floor((data.length * 4) / 5),
+      );
 
-      globeRef.current.ringsData(globeData.filter((d, i) => numbersOfRings.includes(i)));
+      globeRef.current.ringsData(
+        globeData.filter((d, i) => numbersOfRings.includes(i)),
+      );
     }, 2000);
 
     return () => {
@@ -153,9 +159,11 @@ export function Globe({
     };
   }, [globeRef.current, globeData]);
 
-  return (<>
-    <threeGlobe ref={globeRef} />
-  </>);
+  return (
+    <>
+      <threeGlobe ref={globeRef} />
+    </>
+  );
 }
 
 export function WebGLRendererConfig() {
@@ -175,19 +183,22 @@ export function World(props) {
   const scene = new Scene();
   scene.fog = new Fog(0xffffff, 400, 2000);
   return (
-    (<Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
+    <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
       <WebGLRendererConfig />
       <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
       <directionalLight
         color={globeConfig.directionalLeftLight}
-        position={new Vector3(-400, 100, 400)} />
+        position={new Vector3(-400, 100, 400)}
+      />
       <directionalLight
         color={globeConfig.directionalTopLight}
-        position={new Vector3(-200, 500, 200)} />
+        position={new Vector3(-200, 500, 200)}
+      />
       <pointLight
         color={globeConfig.pointLight}
         position={new Vector3(-200, 500, 200)}
-        intensity={0.8} />
+        intensity={0.8}
+      />
       <Globe {...props} />
       <OrbitControls
         enablePan={false}
@@ -197,8 +208,9 @@ export function World(props) {
         autoRotateSpeed={1}
         autoRotate={true}
         minPolarAngle={Math.PI / 3.5}
-        maxPolarAngle={Math.PI - Math.PI / 3} />
-    </Canvas>)
+        maxPolarAngle={Math.PI - Math.PI / 3}
+      />
+    </Canvas>
   );
 }
 

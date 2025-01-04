@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{js,jsx}',
-    './components/**/*.{js,jsx}',
-    './app/**/*.{js,jsx}',
-    './src/**/*.{js,jsx}',
+    "./pages/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./app/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}",
   ],
   prefix: "",
   theme: {
@@ -16,41 +16,41 @@ module.exports = {
         "2xl": "1400px",
       },
     },
-    colors:{
-      'blue': {
-        light: '#8ecae6',
-        mid: '#219EBC',
-        dark: '#023047',
-        hover: '#00566B',
+    colors: {
+      blue: {
+        light: "#8ecae6",
+        mid: "#219EBC",
+        dark: "#023047",
+        hover: "#00566B",
       },
-      'yellow': {
-        mid: '#FFB703',
-        dark: '#FB8500',
-        hover: '#9F5400',
+      yellow: {
+        mid: "#FFB703",
+        dark: "#FB8500",
+        hover: "#9F5400",
       },
-      'green': {
-        light: '#8ee4af',
-        mid: '#3a6351',
-        dark: '#1e352f',
-        hover: '#0d1c18',
+      green: {
+        light: "#8ee4af",
+        mid: "#3a6351",
+        dark: "#1e352f",
+        hover: "#0d1c18",
       },
-      'orange': {
-        light: '#f6d365',
-        mid: '#fda085',
-        dark: '#f6d365',
-        hover: '#f6ad55',
+      orange: {
+        light: "#f6d365",
+        mid: "#fda085",
+        dark: "#f6d365",
+        hover: "#f6ad55",
       },
-      'red': {
-        light: '#ff7e67',
-        mid: '#d62828',
-        dark: '#801313',
-        hover: '#400707',
+      red: {
+        light: "#ff7e67",
+        mid: "#d62828",
+        dark: "#801313",
+        hover: "#400707",
       },
-      'grey': "#E3E3E3",
-      'grey-dark': "#9CA3AF",
-      'grey-light': "#F3F4F6",
-      'white': "#FFFFFF",
-      'black': "#000000",
+      grey: "#E3E3E3",
+      "grey-dark": "#9CA3AF",
+      "grey-light": "#F3F4F6",
+      white: "#FFFFFF",
+      black: "#000000",
     },
     extend: {
       colors: {
@@ -105,4 +105,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};

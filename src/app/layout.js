@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { createPortal } from 'react-dom';
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 
 import {
@@ -14,8 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -45,13 +45,13 @@ const PortalDialog = ({ children }) => {
 
   return createPortal(
     <DialogContent className="p-8">{children}</DialogContent>,
-    document.body
+    document.body,
   );
 };
 
 const Navbar = () => {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState('/');
+  const [currentPage, setCurrentPage] = useState("/");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [navbarVisible, setNavbarVisible] = useState(true);
@@ -59,18 +59,53 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const navLinks = [
-    { href: '/', label: 'Homepage', showWhenLoggedIn: true, showWhenLoggedOut: true, showWhenAdminLoggedIn: true },
-    { href: '/registration', label: 'Registration', showWhenLoggedIn: false, showWhenLoggedOut: true, showWhenAdminLoggedIn: false },
-    { href: '/submission', label: 'Submission', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
-    { href: '/resources', label: 'Resources', showWhenLoggedIn: true, showWhenLoggedOut: false, showWhenAdminLoggedIn: false },
-    { href: '/admin/view_team', label: 'View Teams', showWhenLoggedIn: false, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
-    { href: '/admin/resources', label: 'Resources', showWhenLoggedIn: false, showWhenLoggedOut: false, showWhenAdminLoggedIn: true },
+    {
+      href: "/",
+      label: "Homepage",
+      showWhenLoggedIn: true,
+      showWhenLoggedOut: true,
+      showWhenAdminLoggedIn: true,
+    },
+    {
+      href: "/registration",
+      label: "Registration",
+      showWhenLoggedIn: false,
+      showWhenLoggedOut: true,
+      showWhenAdminLoggedIn: false,
+    },
+    {
+      href: "/submission",
+      label: "Submission",
+      showWhenLoggedIn: true,
+      showWhenLoggedOut: false,
+      showWhenAdminLoggedIn: false,
+    },
+    {
+      href: "/resources",
+      label: "Resources",
+      showWhenLoggedIn: true,
+      showWhenLoggedOut: false,
+      showWhenAdminLoggedIn: false,
+    },
+    {
+      href: "/admin/view_team",
+      label: "View Teams",
+      showWhenLoggedIn: false,
+      showWhenLoggedOut: false,
+      showWhenAdminLoggedIn: true,
+    },
+    {
+      href: "/admin/resources",
+      label: "Resources",
+      showWhenLoggedIn: false,
+      showWhenLoggedOut: false,
+      showWhenAdminLoggedIn: true,
+    },
   ];
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -83,30 +118,33 @@ const Navbar = () => {
       setPrevScrollY(scrollY);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [prevScrollY]);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     setIsAdmin(false);
-    setCurrentPage('/');
-    window.location.href = '/';
+    setCurrentPage("/");
+    window.location.href = "/";
   };
 
   const renderLoginButton = () => (
-    <div className={`flex items-center px-4 py-2 rounded-full text-white cursor-pointer ${isLoggedIn ? 'bg-yellow-dark hover:bg-yellow-hover' : 'bg-blue-mid hover:bg-blue-hover'}`} onClick={isLoggedIn ? handleLogout : () => setOpen(true)}>
-      <p>{isLoggedIn ? 'Logout' : 'Login'}</p>
+    <div
+      className={`flex items-center px-4 py-2 rounded-full text-white cursor-pointer ${isLoggedIn ? "bg-yellow-dark hover:bg-yellow-hover" : "bg-blue-mid hover:bg-blue-hover"}`}
+      onClick={isLoggedIn ? handleLogout : () => setOpen(true)}
+    >
+      <p>{isLoggedIn ? "Logout" : "Login"}</p>
     </div>
   );
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [id]: value
+      [id]: value,
     }));
     console.log({ formData });
   };
@@ -115,46 +153,69 @@ const Navbar = () => {
     e.preventDefault();
 
     // Check if email is admin (you can modify this logic as needed)
-    const isAdminEmail = formData.email.toLowerCase().includes('admin');
+    const isAdminEmail = formData.email.toLowerCase().includes("admin");
     setIsAdmin(isAdminEmail);
     setIsLoggedIn(true);
     console.log({ isAdmin });
     setOpen(false);
-    setCurrentPage('/');
-    router.push('/');
-    alert(`Successfully logged in${isAdminEmail?' as admin':''}!`);
+    setCurrentPage("/");
+    router.push("/");
+    alert(`Successfully logged in${isAdminEmail ? " as admin" : ""}!`);
   };
-  
+
   return (
     // TODO: Create the page links that only admin can view
-    // Probably need to pass the user role to other components across different pages to conditionally render stuff 
+    // Probably need to pass the user role to other components across different pages to conditionally render stuff
     // (like the + button in resources.)
     <>
-      <div className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-xl z-50 rounded-full transition-transform duration-300 ${navbarVisible ? 'translate-y-0' : '-translate-y-[200%]'} ${isLoggedIn ? 'bg-yellow-mid' : 'bg-blue-light'} p-2`}>
+      <div
+        className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-xl z-50 rounded-full transition-transform duration-300 ${navbarVisible ? "translate-y-0" : "-translate-y-[200%]"} ${isLoggedIn ? "bg-yellow-mid" : "bg-blue-light"} p-2`}
+      >
         <div className="mx-auto flex justify-center items-center">
           <div className="text-white hidden sm:flex pr-4 pl-8 sm:gap-x-2 md:gap-x-6 text-center font-bold sm:text-md md:text-lg">
             {navLinks
-              .filter(link => {
+              .filter((link) => {
                 if (isAdmin) {
                   return link.showWhenAdminLoggedIn;
                 }
-                return isLoggedIn ? link.showWhenLoggedIn : link.showWhenLoggedOut;
+                return isLoggedIn
+                  ? link.showWhenLoggedIn
+                  : link.showWhenLoggedOut;
               })
-              .map(link => (
-                <div key={link.href} className={`flex items-center hover:underline ${currentPage === link.href ? 'underline text-black' : ''}`}>
+              .map((link) => (
+                <div
+                  key={link.href}
+                  className={`flex items-center hover:underline ${currentPage === link.href ? "underline text-black" : ""}`}
+                >
                   <Link href={link.href}>
-                    <p onClick={() => setCurrentPage(link.href)}>{link.label}</p>
+                    <p onClick={() => setCurrentPage(link.href)}>
+                      {link.label}
+                    </p>
                   </Link>
                 </div>
-              ))
-            }
-            <Dialog open={open} onOpenChange={setOpen}> {/* setOpen is not necessary actually, but simply onOpenChange need a function type value and can't be null */}
+              ))}
+            <Dialog open={open} onOpenChange={setOpen}>
+              {" "}
+              {/* setOpen is not necessary actually, but simply onOpenChange need a function type value and can't be null */}
               {renderLoginButton()}
               <PortalDialog>
                 <DialogHeader>
-                  <DialogTitle className="text-white font-semibold text-2xl">Login to Your Profile</DialogTitle>
+                  <DialogTitle className="text-white font-semibold text-2xl">
+                    Login to Your Profile
+                  </DialogTitle>
                   <DialogDescription className="text-white">
-                    Don't have an account? Click <Link href="/registration" onClick={() => { setOpen(false); setCurrentPage("/registration") }} className="underline text-blue-mid hover:text-yellow-mid">here</Link> to register.
+                    Don't have an account? Click{" "}
+                    <Link
+                      href="/registration"
+                      onClick={() => {
+                        setOpen(false);
+                        setCurrentPage("/registration");
+                      }}
+                      className="underline text-blue-mid hover:text-yellow-mid"
+                    >
+                      here
+                    </Link>{" "}
+                    to register.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleLoginDialogSubmit}>
@@ -195,7 +256,12 @@ const Navbar = () => {
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button type="submit" className="bg-blue-mid text-white px-4 py-2 rounded-xl">Login</Button>
+                    <Button
+                      type="submit"
+                      className="bg-blue-mid text-white px-4 py-2 rounded-xl"
+                    >
+                      Login
+                    </Button>
                   </DialogFooter>
                 </form>
               </PortalDialog>
@@ -207,7 +273,6 @@ const Navbar = () => {
   );
 };
 
-
 const FooterLink = ({ href, src, alt, text }) => (
   <a
     className="flex items-center gap-2 md:gap-4 hover:underline hover:underline-offset-4"
@@ -215,16 +280,8 @@ const FooterLink = ({ href, src, alt, text }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <Image
-      aria-hidden
-      src={src}
-      alt={alt}
-      width={20}
-      height={20}
-    />
-    <div className="text-xs sm:text-sm md:text-md lg:text-lg">
-      {text}
-    </div>
+    <Image aria-hidden src={src} alt={alt} width={20} height={20} />
+    <div className="text-xs sm:text-sm md:text-md lg:text-lg">{text}</div>
   </a>
 );
 

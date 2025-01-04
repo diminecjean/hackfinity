@@ -7,7 +7,7 @@ import { TracingBeam } from "../ui/tracing-beam";
 
 export default function TracingBeamDemo() {
   return (
-    (<TracingBeam className="px-6">
+    <TracingBeam className="px-6">
       <div className="max-w-2xl mx-auto antialiased pt-4 relative">
         {dummyContent.map((item, index) => (
           <div key={`content-${index}`} className="mb-10">
@@ -26,14 +26,15 @@ export default function TracingBeamDemo() {
                   alt="blog thumbnail"
                   height="1000"
                   width="1000"
-                  className="rounded-lg mb-10 object-cover" />
+                  className="rounded-lg mb-10 object-cover"
+                />
               )}
               {item.description}
             </div>
           </div>
         ))}
       </div>
-    </TracingBeam>)
+    </TracingBeam>
   );
 }
 

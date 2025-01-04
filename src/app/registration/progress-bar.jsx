@@ -1,25 +1,29 @@
 const Dot = ({ progress, position }) => {
   const getColor = (position) => {
-    return progress > position ? 'bg-yellow-mid' : 'bg-grey';
+    return progress > position ? "bg-yellow-mid" : "bg-grey";
   };
 
   return (
-    <div className={`w-8 h-8 rounded-full transition-colors duration-600 delay-200 ${getColor(position)}`} />
+    <div
+      className={`w-8 h-8 rounded-full transition-colors duration-600 delay-200 ${getColor(position)}`}
+    />
   );
 };
 
 const Line = ({ progress, position }) => {
   const getLineColor = (position) => {
-    return progress >= position ? 'bg-yellow-mid' : 'bg-grey';
+    return progress >= position ? "bg-yellow-mid" : "bg-grey";
   };
 
   const getLineWidth = (position) => {
-    return progress > position ? 'w-full' : 'w-0';
+    return progress > position ? "w-full" : "w-0";
   };
 
   return (
     <div className="h-1 flex-1 bg-grey relative overflow-hidden">
-      <div className={`absolute h-full ${getLineWidth(position)} ${getLineColor(position)} transition-all duration-600`} />
+      <div
+        className={`absolute h-full ${getLineWidth(position)} ${getLineColor(position)} transition-all duration-600`}
+      />
     </div>
   );
 };

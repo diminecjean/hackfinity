@@ -4,15 +4,15 @@ import { LayoutGrid } from "../ui/layout-grid";
 
 export default function LayoutGridDemo() {
   return (
-    (<div className="h-screen py-20 w-full">
+    <div className="h-screen py-20 w-full">
       <LayoutGrid cards={cards} />
-    </div>)
+    </div>
   );
 }
 
 const SkeletonOne = () => {
   return (
-    (<div>
+    <div>
       <p className="font-bold md:text-4xl text-xl text-white">
         House in the woods
       </p>
@@ -21,13 +21,13 @@ const SkeletonOne = () => {
         A serene and tranquil retreat, this house in the woods offers a peaceful
         escape from the hustle and bustle of city life.
       </p>
-    </div>)
+    </div>
   );
 };
 
 const SkeletonTwo = () => {
   return (
-    (<div>
+    <div>
       <p className="font-bold md:text-4xl text-xl text-white">
         House above the clouds
       </p>
@@ -37,12 +37,12 @@ const SkeletonTwo = () => {
         unique living experience. It&apos;s a place where the sky meets home,
         and tranquility is a way of life.
       </p>
-    </div>)
+    </div>
   );
 };
 const SkeletonThree = () => {
   return (
-    (<div>
+    <div>
       <p className="font-bold md:text-4xl text-xl text-white">
         Greens all over
       </p>
@@ -51,12 +51,12 @@ const SkeletonThree = () => {
         A house surrounded by greenery and nature&apos;s beauty. It&apos;s the
         perfect place to relax, unwind, and enjoy life.
       </p>
-    </div>)
+    </div>
   );
 };
 const SkeletonFour = () => {
   return (
-    (<div>
+    <div>
       <p className="font-bold md:text-4xl text-xl text-white">
         Rivers are serene
       </p>
@@ -65,7 +65,7 @@ const SkeletonFour = () => {
         A house by the river is a place of peace and tranquility. It&apos;s the
         perfect place to relax, unwind, and enjoy life.
       </p>
-    </div>)
+    </div>
   );
 };
 
