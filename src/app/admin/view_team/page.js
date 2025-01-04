@@ -1,32 +1,15 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import { FaEye } from "react-icons/fa";
-import { createPortal } from "react-dom";
-
+import { PortalDialog } from "@/components/custom/portal-dialog";
 import {
     Dialog,
-    DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-const PortalDialog = ({ children }) => {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-        return () => setMounted(false);
-    }, []);
-
-    if (!mounted) return null;
-
-    return createPortal(<DialogContent className='p-8'>{children}</DialogContent>, document.body);
-};
 
 const TeamsPage = () => {
     const [open, setOpen] = useState(false);
