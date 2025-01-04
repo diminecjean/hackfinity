@@ -1,9 +1,9 @@
 "use client";
+import { useState, useEffect, useCallback } from "react";
+import { createClient } from "@/utils/supabase/component";
 import TopBanner from "@/components/custom/top-banner";
-import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/component";
 import { PortalDialog } from "@/components/custom/portal-dialog";
 
 import {
@@ -18,8 +18,8 @@ import { Label } from "@/components/ui/label";
 
 // TODO: This is just dummy user role, replace with actual user role logic after we have auth
 const userRole = "admin";
-const supabase = createClient();
 
+const supabase = createClient();
 const sections = [
     {
         id: "getting-started",
@@ -37,85 +37,75 @@ const sections = [
         bgColor: "bg-blue-light",
     },
 ];
+// Custom hook for managing resources
+function useResources() {
+    const [resources, setResources] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-async function fetchResourceFromDB() {
-    // Fetch resources from the database
-    try {
-        const { data, error } = await supabase.from("Resource").select("*");
-        if (error) {
-            console.error("Error fetching resources:", error.message);
-            throw new Error("Error fetching resources");
+    // Fetch resources
+    const fetchResources = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            const { data, error } = await supabase.from("Resource").select("*");
+            if (error) throw error;
+            setResources(data);
+        } catch (err) {
+            setError(err.message);
+            console.error("Error fetching resources:", err);
+        } finally {
+            setIsLoading(false);
         }
-        console.log({ data });
-        return data;
-    } catch (err) {
-        console.error("Resource error:", err);
-        alert(err.message || "Error fetching resources, please try again later.");
-        return [];
-    }
-}
+    }, []);
 
-async function removeResourceFromDB(resourceId) {
-    // Remove a resource from the database
-    try {
-        const { data, error } = await supabase.from("Resource").delete().match({ resource_id: resourceId });
-        if (error) {
-            console.error("Error removing resource:", error.message);
-            throw new Error("Error removing resource");
-        }
-        return true;
-    } catch (err) {
-        console.error("Resource removal error:", err);
-        alert(err.message || "Error removing resource, please try again later.");
-        return false;
-    }
-}
-
-async function addResourceToDB(resourceName, resourceLink, section) {
-    // Add a new resource to the database
-    try {
-        const { data, error } = await supabase
-            .from("Resource")
-            .insert([
-                {
+    // Add resource
+    const addResource = useCallback(async (resourceName, resourceLink, section) => {
+        try {
+            const { data, error } = await supabase
+                .from("Resource")
+                .insert([{
                     file_name: resourceName,
                     file_path: resourceLink,
                     section: section
-                }
-            ])
-            .select(); // Return the inserted row
+                }])
+                .select();
 
-        if (error) {
-            console.error("Error adding resource:", error.message);
-            throw new Error("Error adding resource");
+            if (error) throw error;
+            if (!data?.[0]) throw new Error("No data returned from insert");
+
+            const newResource = data[0];
+            setResources(current => [...current, newResource]);
+            return { success: true, resource: newResource };
+        } catch (err) {
+            console.error("Error adding resource:", err);
+            return { success: false, error: err.message };
         }
-        return data[0]; 
-    } catch (err) {
-        console.error("Resource addition error:", err);
-        alert(err.message || "Error adding resource, please try again later.");
-        return false;
-    }
-    
-}
-
-export default function Resources() {
-    const [resources, setResources] = useState([]);
-    const [section, setSection] = useState("");
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [newResourceTitle, setNewResourceTitle] = useState("");
-    const [newResourceFileLink, setNewResourceFileLink] = useState("");
-
-    // "resources" only set once when the component renders;
-    // component rerenders during state changes
-    useEffect(() => {
-        async function loadResources() {
-            const fetchedResources = await fetchResourceFromDB();
-            setResources(fetchedResources);
-        }
-        loadResources();
     }, []);
 
-    console.log({ resources });
+    // Remove resource
+    const removeResource = useCallback(async (resourceId) => {
+        try {
+            const { error } = await supabase
+                .from("Resource")
+                .delete()
+                .match({ resource_id: resourceId });
+
+            if (error) throw error;
+            
+            setResources(current => 
+                current.filter(resource => resource.resource_id !== resourceId)
+            );
+            return { success: true };
+        } catch (err) {
+            console.error("Error removing resource:", err);
+            return { success: false, error: err.message };
+        }
+    }, []);
+
+    // Load resources on mount
+    useEffect(() => {
+        fetchResources();
+    }, [fetchResources]);
 
     // Group resources by section
     const groupedResources = resources.reduce((acc, resource) => {
@@ -127,65 +117,65 @@ export default function Resources() {
         return acc;
     }, {});
 
-    // Resources removal functions, for admin only
-    const removeResource = async (resourceId) => {
-        const resourceRemovedFromDB = await removeResourceFromDB(resourceId);
-        if (resourceRemovedFromDB){const resourceRemovedFromDB = 
-            setResources(resources.filter((resource) => resource.resource_id !== resourceId));
-            alert("Resource removed successfully!");
-        }
+    return {
+        resources,
+        groupedResources,
+        isLoading,
+        error,
+        addResource,
+        removeResource,
+        refreshResources: fetchResources
     };
+}
 
-    // const addResource = (section) => {
-        // const newResourceTitle = prompt("Enter the title of the new resource:");
-        // // Create a hidden input element to select a file
-        // const fileInput = document.createElement("input");
-        // fileInput.type = "file";
-        // fileInput.accept = ".pdf,.doc,.docx,.txt"; // Limit file types (optional)
-        // // Listen for file selection
-        // fileInput.onchange = (e) => {
-        //     const file = e.target.files[0];
-        //     if (newResourceTitle && file) {
-        //         const newResource = {
-        //             id: resources.length + 1, // Temporary ID, consider UUID for production
-        //             title: newResourceTitle,
-        //             section: section,
-        //             document: file,
-        //         };
-        //         setResources([...resources, newResource]);
-        //         alert(
-        //             `Resource "${newResourceTitle}" with document "${file.name}" added successfully!`,
-        //         );
-        //     }
-        // };
-        // // Trigger the file selection dialog
-        // fileInput.click();
-    // };
-
-    const handleAddResource = async () => {
-        if (newResourceTitle && newResourceFileLink) {
-            // can consider upload file to supabase storage
-            // @see https://supabase.com/docs/guides/storage
-
-            // Add the new resource to the database
-            const newResource = await addResourceToDB(newResourceTitle, newResourceFileLink, section);
-
-            if (newResource) {    
-                // Update the state with the new resource
-                setResources([...resources, newResource]);
-                alert(
-                    `Resource "${newResourceTitle}" added successfully!`,
-                );
+// Main component
+export default function Resources() {
+    const {
+        groupedResources,
+        isLoading,
+        error,
+        addResource,
+        removeResource
+    } = useResources();
     
-                // Reset the form and close the dialog
-                setNewResourceTitle("");
-                setNewResourceFileLink(null);
-                setDialogOpen(false);
-            }
+    const [section, setSection] = useState("");
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [newResourceTitle, setNewResourceTitle] = useState("");
+    const [newResourceFileLink, setNewResourceFileLink] = useState("");
+    
+    const handleAddResource = async () => {
+        if (!newResourceTitle || !newResourceFileLink) return;
+        
+        const result = await addResource(newResourceTitle, newResourceFileLink, section);
+        
+        if (result.success) {
+            alert(`Resource "${newResourceTitle}" added successfully!`);
+            // Reset form
+            setNewResourceTitle("");
+            setNewResourceFileLink("");
+            setDialogOpen(false);
+        } else {
+            alert(`Failed to add resource: ${result.error}`);
         }
     };
+
+    const handleRemoveResource = async (resourceId) => {
+        const result = await removeResource(resourceId);
+        
+        if (result.success) {
+            alert("Resource removed successfully!");
+        } else {
+            alert(`Failed to remove resource: ${result.error}`);
+        }
+    };
+
+    if (isLoading) return <div>Loading resources...</div>;
+    if (error) return <div>Error loading resources: {error}</div>;
 
     return (
+        // ... rest of your JSX remains the same, but update these parts:
+        // 1. Pass handleRemoveResource instead of removeResource to Section
+        // 2. Use groupedResources directly from the hook
         <div className='font-[family-name:var(--font-geist-sans)]'>
             <TopBanner
                 title='Resources Center'
@@ -200,7 +190,7 @@ export default function Resources() {
                         bgColor={section.bgColor}
                         isAdmin={userRole === "admin"}
                         onAdd={() => {setDialogOpen(true); setSection(section.title);}}
-                        onRemove={removeResource}
+                        onRemove={handleRemoveResource}
                     />
                 ))}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
