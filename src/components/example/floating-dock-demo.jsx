@@ -41,7 +41,8 @@ export default function FloatingDockDemo() {
           src="https://assets.aceternity.com/logo-dark.png"
           width={20}
           height={20}
-          alt="Aceternity Logo" />
+          alt="Aceternity Logo"
+        />
       ),
       href: "#",
     },
@@ -69,11 +70,12 @@ export default function FloatingDockDemo() {
     },
   ];
   return (
-    (<div className="flex items-center justify-center h-[35rem] w-full">
+    <div className="flex items-center justify-center h-[35rem] w-full">
       <FloatingDock
         // only for demo, remove for production
         mobileClassName="translate-y-20"
-        items={links} />
-    </div>)
+        items={links}
+      />
+    </div>
   );
 }

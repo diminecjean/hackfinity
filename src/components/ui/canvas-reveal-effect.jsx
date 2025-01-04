@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { cn } from "@/lib/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { useMemo, useRef } from "react";
@@ -10,10 +10,10 @@ export const CanvasRevealEffect = ({
   colors = [[0, 255, 255]],
   containerClassName,
   dotSize,
-  showGradient = true
+  showGradient = true,
 }) => {
   return (
-    (<div className={cn("h-full relative bg-white w-full", containerClassName)}>
+    <div className={cn("h-full relative bg-white w-full", containerClassName)}>
       <div className="h-full w-full">
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
@@ -27,12 +27,13 @@ export const CanvasRevealEffect = ({
               opacity *= step(intro_offset, u_time * animation_speed_factor);
               opacity *= clamp((1.0 - step(intro_offset + 0.1, u_time * animation_speed_factor)) * 1.25, 1.0, 1.25);
             `}
-          center={["x", "y"]} />
+          center={["x", "y"]}
+        />
       </div>
       {showGradient && (
         <div className="absolute inset-0 bg-gradient-to-t from-gray-950 to-[84%]" />
       )}
-    </div>)
+    </div>
   );
 };
 
@@ -98,7 +99,7 @@ const DotMatrix = ({
   }, [colors, opacities, totalSize, dotSize]);
 
   return (
-    (<Shader
+    <Shader
       source={`
         precision mediump float;
         in vec2 fragCoord;
@@ -149,15 +150,12 @@ const DotMatrix = ({
       fragColor.rgb *= fragColor.a;
         }`}
       uniforms={uniforms}
-      maxFps={60} />)
+      maxFps={60}
+    />
   );
 };
 
-const ShaderMaterial = ({
-  source,
-  uniforms,
-  maxFps = 60
-}) => {
+const ShaderMaterial = ({ source, uniforms, maxFps = 60 }) => {
   const { size } = useThree();
   const ref = useRef();
   let lastFrameTime = 0;
@@ -196,8 +194,7 @@ const ShaderMaterial = ({
           break;
         case "uniform3fv":
           preparedUniforms[uniformName] = {
-            value: uniform.value.map((v) =>
-              new THREE.Vector3().fromArray(v)),
+            value: uniform.value.map((v) => new THREE.Vector3().fromArray(v)),
             type: "3fv",
           };
           break;
@@ -248,17 +245,17 @@ const ShaderMaterial = ({
   }, [size.width, size.height, source]);
 
   return (
-    (<mesh ref={ref}>
+    <mesh ref={ref}>
       <planeGeometry args={[2, 2]} />
       <primitive object={material} attach="material" />
-    </mesh>)
+    </mesh>
   );
 };
 
 const Shader = ({ source, uniforms, maxFps = 60 }) => {
   return (
-    (<Canvas className="absolute inset-0  h-full w-full">
+    <Canvas className="absolute inset-0  h-full w-full">
       <ShaderMaterial source={source} uniforms={uniforms} maxFps={maxFps} />
-    </Canvas>)
+    </Canvas>
   );
 };

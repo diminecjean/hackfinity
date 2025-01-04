@@ -9,7 +9,7 @@ import {
 
 export default function BentoGridSecondDemo() {
   return (
-    (<BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
+    <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
       {items.map((item, i) => (
         <BentoGridItem
           key={i}
@@ -17,14 +17,14 @@ export default function BentoGridSecondDemo() {
           description={item.description}
           header={item.header}
           className={item.className}
-          icon={item.icon} />
+          icon={item.icon}
+        />
       ))}
-    </BentoGrid>)
+    </BentoGrid>
   );
 }
 const Skeleton = () => (
-  <div
-    className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl   dark:bg-dot-white/[0.2] bg-dot-black/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]  border border-transparent dark:border-white/[0.2] bg-neutral-100 dark:bg-black"></div>
+  <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl   dark:bg-dot-white/[0.2] bg-dot-black/[0.2] [mask-image:radial-gradient(ellipse_at_center,white,transparent)]  border border-transparent dark:border-white/[0.2] bg-neutral-100 dark:bg-black"></div>
 );
 const items = [
   {

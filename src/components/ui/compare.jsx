@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { AnimatePresence, motion } from "framer-motion";
@@ -15,7 +15,7 @@ export const Compare = ({
   slideMode = "hover",
   showHandlebar = true,
   autoplay = false,
-  autoplayDuration = 5000
+  autoplayDuration = 5000,
 }) => {
   const [sliderXPercent, setSliderXPercent] = useState(initialSliderPercentage);
   const [isDragging, setIsDragging] = useState(false);
@@ -71,11 +71,14 @@ export const Compare = ({
     startAutoplay();
   }
 
-  const handleStart = useCallback((clientX) => {
-    if (slideMode === "drag") {
-      setIsDragging(true);
-    }
-  }, [slideMode]);
+  const handleStart = useCallback(
+    (clientX) => {
+      if (slideMode === "drag") {
+        setIsDragging(true);
+      }
+    },
+    [slideMode],
+  );
 
   const handleEnd = useCallback(() => {
     if (slideMode === "drag") {
@@ -83,27 +86,39 @@ export const Compare = ({
     }
   }, [slideMode]);
 
-  const handleMove = useCallback((clientX) => {
-    if (!sliderRef.current) return;
-    if (slideMode === "hover" || (slideMode === "drag" && isDragging)) {
-      const rect = sliderRef.current.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const percent = (x / rect.width) * 100;
-      requestAnimationFrame(() => {
-        setSliderXPercent(Math.max(0, Math.min(100, percent)));
-      });
-    }
-  }, [slideMode, isDragging]);
+  const handleMove = useCallback(
+    (clientX) => {
+      if (!sliderRef.current) return;
+      if (slideMode === "hover" || (slideMode === "drag" && isDragging)) {
+        const rect = sliderRef.current.getBoundingClientRect();
+        const x = clientX - rect.left;
+        const percent = (x / rect.width) * 100;
+        requestAnimationFrame(() => {
+          setSliderXPercent(Math.max(0, Math.min(100, percent)));
+        });
+      }
+    },
+    [slideMode, isDragging],
+  );
 
-  const handleMouseDown = useCallback((e) => handleStart(e.clientX), [handleStart]);
+  const handleMouseDown = useCallback(
+    (e) => handleStart(e.clientX),
+    [handleStart],
+  );
   const handleMouseUp = useCallback(() => handleEnd(), [handleEnd]);
-  const handleMouseMove = useCallback((e) => handleMove(e.clientX), [handleMove]);
+  const handleMouseMove = useCallback(
+    (e) => handleMove(e.clientX),
+    [handleMove],
+  );
 
-  const handleTouchStart = useCallback((e) => {
-    if (!autoplay) {
-      handleStart(e.touches[0].clientX);
-    }
-  }, [handleStart, autoplay]);
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (!autoplay) {
+        handleStart(e.touches[0].clientX);
+      }
+    },
+    [handleStart, autoplay],
+  );
 
   const handleTouchEnd = useCallback(() => {
     if (!autoplay) {
@@ -111,14 +126,17 @@ export const Compare = ({
     }
   }, [handleEnd, autoplay]);
 
-  const handleTouchMove = useCallback((e) => {
-    if (!autoplay) {
-      handleMove(e.touches[0].clientX);
-    }
-  }, [handleMove, autoplay]);
+  const handleTouchMove = useCallback(
+    (e) => {
+      if (!autoplay) {
+        handleMove(e.touches[0].clientX);
+      }
+    },
+    [handleMove, autoplay],
+  );
 
   return (
-    (<div
+    <div
       ref={sliderRef}
       className={cn("w-[400px] h-[400px] overflow-hidden", className)}
       style={{
@@ -132,7 +150,8 @@ export const Compare = ({
       onMouseUp={handleMouseUp}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      onTouchMove={handleTouchMove}>
+      onTouchMove={handleTouchMove}
+    >
       <AnimatePresence initial={false}>
         <motion.div
           className="h-full w-px absolute top-0 m-auto z-30 bg-gradient-to-b from-transparent from-[5%] to-[95%] via-indigo-500 to-transparent"
@@ -141,50 +160,49 @@ export const Compare = ({
             top: "0",
             zIndex: 40,
           }}
-          transition={{ duration: 0 }}>
-          <div
-            className="w-36 h-full [mask-image:radial-gradient(100px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-indigo-400 via-transparent to-transparent z-20 opacity-50" />
-          <div
-            className="w-10 h-1/2 [mask-image:radial-gradient(50px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-cyan-400 via-transparent to-transparent z-10 opacity-100" />
-          <div
-            className="w-10 h-3/4 top-1/2 -translate-y-1/2 absolute -right-10 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
+          transition={{ duration: 0 }}
+        >
+          <div className="w-36 h-full [mask-image:radial-gradient(100px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-indigo-400 via-transparent to-transparent z-20 opacity-50" />
+          <div className="w-10 h-1/2 [mask-image:radial-gradient(50px_at_left,white,transparent)] absolute top-1/2 -translate-y-1/2 left-0 bg-gradient-to-r from-cyan-400 via-transparent to-transparent z-10 opacity-100" />
+          <div className="w-10 h-3/4 top-1/2 -translate-y-1/2 absolute -right-10 [mask-image:radial-gradient(100px_at_left,white,transparent)]">
             <MemoizedSparklesCore
               background="transparent"
               minSize={0.4}
               maxSize={1}
               particleDensity={1200}
               className="w-full h-full"
-              particleColor="#FFFFFF" />
+              particleColor="#FFFFFF"
+            />
           </div>
           {showHandlebar && (
-            <div
-              className="h-5 w-5 rounded-md top-1/2 -translate-y-1/2 bg-white z-30 -right-2.5 absolute   flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40]">
+            <div className="h-5 w-5 rounded-md top-1/2 -translate-y-1/2 bg-white z-30 -right-2.5 absolute   flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40]">
               <IconDotsVertical className="h-4 w-4 text-black" />
             </div>
           )}
         </motion.div>
       </AnimatePresence>
-      <div
-        className="overflow-hidden w-full h-full relative z-20 pointer-events-none">
+      <div className="overflow-hidden w-full h-full relative z-20 pointer-events-none">
         <AnimatePresence initial={false}>
           {firstImage ? (
             <motion.div
               className={cn(
                 "absolute inset-0 z-20 rounded-2xl flex-shrink-0 w-full h-full select-none overflow-hidden",
-                firstImageClassName
+                firstImageClassName,
               )}
               style={{
                 clipPath: `inset(0 ${100 - sliderXPercent}% 0 0)`,
               }}
-              transition={{ duration: 0 }}>
+              transition={{ duration: 0 }}
+            >
               <img
                 alt="first image"
                 src={firstImage}
                 className={cn(
                   "absolute inset-0  z-20 rounded-2xl flex-shrink-0 w-full h-full select-none",
-                  firstImageClassName
+                  firstImageClassName,
                 )}
-                draggable={false} />
+                draggable={false}
+              />
             </motion.div>
           ) : null}
         </AnimatePresence>
@@ -194,14 +212,15 @@ export const Compare = ({
           <motion.img
             className={cn(
               "absolute top-0 left-0 z-[19]  rounded-2xl w-full h-full select-none",
-              secondImageClassname
+              secondImageClassname,
             )}
             alt="second image"
             src={secondImage}
-            draggable={false} />
+            draggable={false}
+          />
         ) : null}
       </AnimatePresence>
-    </div>)
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState, useRef } from "react";
 
@@ -93,7 +93,10 @@ export const ShootingStars = ({
   }, [star]);
 
   return (
-    (<svg ref={svgRef} className={cn("w-full h-full absolute inset-0", className)}>
+    <svg
+      ref={svgRef}
+      className={cn("w-full h-full absolute inset-0", className)}
+    >
       {star && (
         <rect
           key={star.id}
@@ -104,14 +107,18 @@ export const ShootingStars = ({
           fill="url(#gradient)"
           transform={`rotate(${star.angle}, ${
             star.x + (starWidth * star.scale) / 2
-          }, ${star.y + starHeight / 2})`} />
+          }, ${star.y + starHeight / 2})`}
+        />
       )}
       <defs>
         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style={{ stopColor: trailColor, stopOpacity: 0 }} />
-          <stop offset="100%" style={{ stopColor: starColor, stopOpacity: 1 }} />
+          <stop
+            offset="100%"
+            style={{ stopColor: starColor, stopOpacity: 1 }}
+          />
         </linearGradient>
       </defs>
-    </svg>)
+    </svg>
   );
 };
