@@ -19,6 +19,8 @@ import { Label } from "@/components/ui/label";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { createClient } from "@/utils/supabase/component";
+
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
     variable: "--font-geist-sans",
@@ -35,9 +37,16 @@ const Navbar = () => {
     const [currentPage, setCurrentPage] = useState("/");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isParticipant, setIsParticipant] = useState(false);
     const [navbarVisible, setNavbarVisible] = useState(true);
     const [prevScrollY, setPrevScrollY] = useState(0);
     const [open, setOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const supabase = createClient();
 
     const navLinks = [
         {
@@ -83,19 +92,11 @@ const Navbar = () => {
             showWhenAdminLoggedIn: true,
         },
     ];
-    const [formData, setFormData] = useState({
-        email: "",
-        password: "",
-    });
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollY = window.scrollY;
-            if (scrollY > prevScrollY) {
-                setNavbarVisible(false);
-            } else {
-                setNavbarVisible(true);
-            }
+            setNavbarVisible(scrollY <= prevScrollY);
             setPrevScrollY(scrollY);
         };
 
@@ -108,6 +109,7 @@ const Navbar = () => {
     const handleLogout = () => {
         setIsLoggedIn(false);
         setIsAdmin(false);
+        setIsParticipant(false);
         setCurrentPage("/");
         window.location.href = "/";
     };
@@ -127,27 +129,84 @@ const Navbar = () => {
             ...prev,
             [id]: value,
         }));
-        console.log({ formData });
     };
 
-    const handleLoginDialogSubmit = (e) => {
+    const handleLoginDialogSubmit = async (e) => {
         e.preventDefault();
+        const email = formData.email.toLowerCase();
 
-        // Check if email is admin (you can modify this logic as needed)
-        const isAdminEmail = formData.email.toLowerCase().includes("admin");
-        setIsAdmin(isAdminEmail);
-        setIsLoggedIn(true);
-        console.log({ isAdmin });
-        setOpen(false);
-        setCurrentPage("/");
-        router.push("/");
-        alert(`Successfully logged in${isAdminEmail ? " as admin" : ""}!`);
+        try {
+            let isAdmin = false;
+            let isParticipant = false;
+
+            // Check "Admin" table
+            const { data: adminData, error: adminError } = await supabase
+                .from("Admin")
+                .select("admin_email")
+                .eq("admin_email", email)
+                .single();
+            if (adminData) isAdmin = true;
+
+            // Check "Participants" table
+            const { data: participantData, error: participantError } = await supabase
+                .from("Participants")
+                .select("email")
+                .eq("email", email)
+                .single();
+            if (participantData) isParticipant = true;
+
+            if (isAdmin || isParticipant) {
+                // Login with Supabase Auth
+                const { user, error: authError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password: formData.password,
+                });
+
+                if (authError) {
+                    alert("Authentication failed: " + authError.message);
+                    return;
+                }
+
+                setIsLoggedIn(true);
+                setIsAdmin(isAdmin);
+                setIsParticipant(isParticipant);
+                setOpen(false);
+
+                // Redirect based on roles
+                if (isAdmin && isParticipant) {
+                    const role = window.confirm("You are both Admin and Participant. Do you want to log in as Admin?")
+                        ? "admin"
+                        : "participant";
+                
+                    console.log("role:", role);
+                    
+                    if (role === "admin") {
+                        isParticipant = false; // This directly modifies the variable, but it does NOT update React state or trigger a re-render
+                        setIsParticipant(isParticipant); // This updates the React state properly and triggers a re-render
+                    } else {
+                        isAdmin = false; // This directly modifies the variable, but it does NOT update React state or trigger a re-render
+                        setIsAdmin(isAdmin); // This updates the React state properly and triggers a re-render
+                    }
+                
+                } else if (isAdmin) {
+                    setCurrentPage("/");
+                    router.push("/");
+                } else if (isParticipant) {
+                    setCurrentPage("/");
+                    router.push("/");
+                }
+
+                alert(`Successfully logged in as ${isAdmin ? "Admin" : "Participant"}!`);
+            } else {
+                alert("No account found with this email.");
+            }
+        } catch (error) {
+            console.error("Error during login:", error);
+            alert("An error occurred. Please try again later.");
+        }
     };
 
     return (
-        // TODO: Create the page links that only admin can view
-        // Probably need to pass the user role to other components across different pages to conditionally render stuff
-        // (like the + button in resources.)
         <>
             <div
                 className={`hidden sm:flex fixed top-10 sm:max-w-md md:max-w-xl z-50 rounded-full transition-transform duration-300 ${navbarVisible ? "translate-y-0" : "-translate-y-[200%]"} ${isLoggedIn ? "bg-yellow-mid" : "bg-blue-light"} p-2`}
