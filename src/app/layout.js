@@ -157,7 +157,7 @@ const Navbar = () => {
 
             if (isAdmin || isParticipant) {
                 // Login with Supabase Auth
-                const { user, error: authError } = await supabase.auth.signInWithPassword({
+                const { data, error: authError } = await supabase.auth.signInWithPassword({
                     email,
                     password: formData.password,
                 });
