@@ -2,17 +2,12 @@
 import React, { useState, useEffect } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import { PortalDialog } from "@/components/custom/portal-dialog";
-import {
-    Dialog,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { fetchTeamsData } from "./api";
 
 const TeamsTable = ({ teams }) => {
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [open, setOpen] = useState(false);
 
@@ -26,7 +21,7 @@ const TeamsTable = ({ teams }) => {
     };
 
     const filteredTeams = teams.filter((team) =>
-        team.name.toLowerCase().includes(searchQuery.toLowerCase())
+        team.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     return (
@@ -80,47 +75,41 @@ const TeamsTable = ({ teams }) => {
                                     {selectedTeam.name}
                                 </DialogTitle>
                             </DialogHeader>
-                                <div className='grid gap-4 p-4 text-white'>
-                                    <div className='grid grid-cols-[140px_10px_auto]'>
-                                        <span>Team Code</span>
-                                        <span>:</span>
-                                        <span className='font-bold'>{selectedTeam.code}</span>
-                                    </div>
-                                    <div className='grid grid-cols-[140px_10px_auto]'>
-                                        <span>Members</span>
-                                        <span>:</span>
-                                        <span className='font-bold'>
-                                            {selectedTeam.members}
-                                        </span>
-                                    </div>
-                                    <div className='grid grid-cols-[140px_10px_90px]'>
-                                        <span>Submission Status</span>
-                                        <span>:</span>
-                                        <span
-                                            className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === "Submitted" ? "bg-green-light" : "bg-orange-mid"}`}
-                                        >
-                                            {selectedTeam.submission}
-                                        </span>
-                                    </div>
-                                    <div className='grid grid-cols-[140px_10px_auto]'>
-                                        <span>Proposal</span>
-                                        <span>:</span>
-                                        <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                            <button>
-                                                {selectedTeam.proposal}
-                                            </button>
-                                        </span>
-                                    </div>
-                                    <div className='grid grid-cols-[140px_10px_auto]'>
-                                        <span>Pitching Slides</span>
-                                        <span>:</span>
-                                        <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                            <button>
-                                                {selectedTeam.pitching_slides}
-                                            </button>
-                                        </span>
-                                    </div>
+                            <div className='grid gap-4 p-4 text-white'>
+                                <div className='grid grid-cols-[140px_10px_auto]'>
+                                    <span>Team Code</span>
+                                    <span>:</span>
+                                    <span className='font-bold'>{selectedTeam.code}</span>
                                 </div>
+                                <div className='grid grid-cols-[140px_10px_auto]'>
+                                    <span>Members</span>
+                                    <span>:</span>
+                                    <span className='font-bold'>{selectedTeam.members}</span>
+                                </div>
+                                <div className='grid grid-cols-[140px_10px_90px]'>
+                                    <span>Submission Status</span>
+                                    <span>:</span>
+                                    <span
+                                        className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === "Submitted" ? "bg-green-light" : "bg-orange-mid"}`}
+                                    >
+                                        {selectedTeam.submission}
+                                    </span>
+                                </div>
+                                <div className='grid grid-cols-[140px_10px_auto]'>
+                                    <span>Proposal</span>
+                                    <span>:</span>
+                                    <span className='font-bold underline text-blue-light hover:text-blue-mid'>
+                                        <button>{selectedTeam.proposal}</button>
+                                    </span>
+                                </div>
+                                <div className='grid grid-cols-[140px_10px_auto]'>
+                                    <span>Pitching Slides</span>
+                                    <span>:</span>
+                                    <span className='font-bold underline text-blue-light hover:text-blue-mid'>
+                                        <button>{selectedTeam.pitching_slides}</button>
+                                    </span>
+                                </div>
+                            </div>
                             <DialogFooter>
                                 <Button
                                     onClick={() => setOpen(false)}
@@ -137,19 +126,17 @@ const TeamsTable = ({ teams }) => {
     );
 };
 
-
 const TeamsPage = () => {
     const [teams, setTeams] = useState([]);
-    
+
     useEffect(() => {
         const loadTeams = async () => {
             const data = await fetchTeamsData();
             setTeams(data);
         };
-    
+
         loadTeams();
     }, []);
-
 
     return (
         <div className='min-h-screen bg-blue-900 text-white'>
