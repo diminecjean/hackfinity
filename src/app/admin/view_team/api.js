@@ -11,6 +11,7 @@ const SolutionStatus = {
 export const fetchTeamsData = async () => {
     try {
 
+        // 1. Fetch team data
         const { data: teams, error: teamsError } = await supabase
             .from('Team')
             .select('team_name, team_code, solution_id');
@@ -18,9 +19,11 @@ export const fetchTeamsData = async () => {
         if (teamsError) {
             throw new Error('Error fetching teams', teamsError);
         }
-    
+
+        // 2. Fetch data from other tables associated to team
         const teamData = await Promise.all(
             teams.map(async (team) => {
+                // 2.1 Fetch solution data for each team
                 const { data: solution, error: solutionError } = await supabase
                     .from('Solutions')
                     .select('solution_status, proposal, pitching_slides') 
@@ -35,6 +38,8 @@ export const fetchTeamsData = async () => {
                     return null;
                 }
     
+                // 2.2 Fetch number of participants for each team
+                // Can fetch participant info if needed
                 const { data: participants, error: participantsError } = await supabase
                     .from('Participants')
                     .select('participant_id', { count: 'exact' })
@@ -45,7 +50,7 @@ export const fetchTeamsData = async () => {
                     console.error('Error fetching participants:', participantsError);
                     return null;
                 }
-    
+                
                 return {
                     name: team.team_name,
                     code: team.team_code,
@@ -56,11 +61,13 @@ export const fetchTeamsData = async () => {
                 };
             })
         );
-    
+        
+        // Filter out null records and return teamData object
         return teamData.filter((team) => team !== null);
     } catch (err) {
         console.log('Error:', err);
-        return [];
+        // Return emtpy array if error
+        return null;
     }
 };
 
