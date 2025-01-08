@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import TopBanner from "@/components/custom/top-banner";
-import { FaEye } from "react-icons/fa";
 import { PortalDialog } from "@/components/custom/portal-dialog";
 import {
     Dialog,
@@ -123,7 +122,6 @@ const TeamsPage = () => {
                                 <th className='p-4'>Team Code</th>
                                 <th className='p-4'>Members</th>
                                 <th className='p-4'>Submission</th>
-                                <th className='p-4'>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -143,15 +141,9 @@ const TeamsPage = () => {
                                             {team.submission}
                                         </span>
                                     </td>
-                                    <td className='p-4'>
-                                        <button className='bg-gray-600 p-2 rounded'>
-                                            <FaEye className='text-white' />
-                                        </button>
-                                    </td>
                                 </tr>
                             ))}
                         </tbody>
-                        {/* TO AHDEANLAU: Change the dialog layout here */}
                         {selectedTeam && (
                             <Dialog open={open} onOpenChange={setOpen}>
                                 <PortalDialog>
