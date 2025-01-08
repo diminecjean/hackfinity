@@ -128,8 +128,9 @@ const TeamsPage = () => {
                                             <span>Proposal</span>
                                             <span>:</span>
                                             <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                                <button onClick={handleDownload}>
-                                                    Download Document
+                                                {/* <button onClick={handleDownload}> */}
+                                                <button>
+                                                    {selectedTeam.proposal}
                                                 </button>
                                             </span>
                                         </div>
@@ -137,8 +138,9 @@ const TeamsPage = () => {
                                             <span>Pitching Slides</span>
                                             <span>:</span>
                                             <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                                <button onClick={handleDownload}>
-                                                    Download Document
+                                                {/* <button onClick={handleDownload}> */}
+                                                <button>
+                                                    {selectedTeam.pitching_slides}
                                                 </button>
                                             </span>
                                         </div>
@@ -159,20 +161,9 @@ const TeamsPage = () => {
                         <button className='px-3 py-1 mx-1 bg-grey-dark text-white rounded font-bold'>
                             1
                         </button>
-                        {/* <button className="px-3 py-1 mx-1 text-white rounded">2</button>
-                        <button className="px-3 py-1 mx-1 text-white rounded">3</button>
-                        <button className="px-3 py-1 mx-1 text-white rounded">4</button> */}
                     </div>
                 </div>
             </div>
-            {/* <footer className="mt-10 text-center">
-                <div className="flex justify-center space-x-6">
-                    <span>BizMaker 2024</span>
-                    <span>@bizmaker_2024</span>
-                    <span>usm.bizmaker@gmail.com</span>
-                </div>
-                <p className="mt-4">@ 2024 USM SOM Management Society</p>
-            </footer> */}
         </div>
     );
 };

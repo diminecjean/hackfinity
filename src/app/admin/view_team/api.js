@@ -22,10 +22,12 @@ export const fetchTeamsData = async () => {
         const teamData = await Promise.all(
             teams.map(async (team) => {
                 const { data: solution, error: solutionError } = await supabase
-                    .from('Solution')
-                    .select('solution_status')
+                    .from('Solutions')
+                    .select('solution_status, proposal, pitching_slides') 
                     .eq('solution_id', team.solution_id)
                     .single();
+
+                    console.log({proposal: solution.proposal, slides: solution.pitching_slides});
     
                 if (solutionError) {
                     console.log(team.solution_id);
@@ -49,6 +51,8 @@ export const fetchTeamsData = async () => {
                     code: team.team_code,
                     members: `${participants.length}/5`,
                     submission: solution?.solution_status || SolutionStatus.None,
+                    proposal: solution?.proposal || SolutionStatus.None,
+                    pitching_slides: solution?.pitching_slides || SolutionStatus.None
                 };
             })
         );
