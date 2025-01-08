@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import { PortalDialog } from "@/components/custom/portal-dialog";
 import {
@@ -9,73 +9,23 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { fetchTeamsData } from "./api";
+
 
 const TeamsPage = () => {
     const [open, setOpen] = useState(false);
+    const [teams, setTeams] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const teams = [
-        {
-            name: "We are the champion",
-            code: "A123BC",
-            members: "4/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Let's Win",
-            code: "A153TR",
-            members: "3/5",
-            submission: "Pending",
-        },
-        {
-            name: "Top",
-            code: "A439GG",
-            members: "5/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Gummy",
-            code: "A555JP",
-            members: "4/5",
-            submission: "Submitted",
-        },
-        {
-            name: "BizBuzz",
-            code: "A781UI",
-            members: "3/5",
-            submission: "Pending",
-        },
-        {
-            name: "Weeee",
-            code: "A672MP",
-            members: "4/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Apex",
-            code: "A222FL",
-            members: "4/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Big Bang",
-            code: "A443OIP",
-            members: "5/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Bill Gates",
-            code: "A698IGV",
-            members: "3/5",
-            submission: "Submitted",
-        },
-        {
-            name: "Smartest",
-            code: "A375BD",
-            members: "4/5",
-            submission: "Submitted",
-        },
-    ];
+    
+    useEffect(() => {
+        const loadTeams = async () => {
+            const data = await fetchTeamsData();
+            setTeams(data);
+        };
+    
+        loadTeams();
+    }, []);
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
