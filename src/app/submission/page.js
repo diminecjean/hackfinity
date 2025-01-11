@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import { createClient } from "@/utils/supabase/component";
 import { uploadFileToSupabaseBucket } from "@/utils/supabase/storage";
-import { fetchLoggedInUser, fetchSessionAndUser } from "@/utils/supabase/login_session";
 
 const supabase = createClient();
 
