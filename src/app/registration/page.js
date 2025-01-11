@@ -428,7 +428,7 @@ export default function Registration() {
                 ]);
                 if (teamError) {
                     console.error("Team error:", teamError);
-                    const error = new Error("Failed to create team");
+                    const error = new Error(teamError.details + "\nFailed to create team");
                     error.step = 1;
                     error.details = teamError;
                     throw error;
@@ -446,7 +446,7 @@ export default function Registration() {
 
             if (authError) {
                 console.error("Auth error:", authError);
-                const error = new Error("Failed to create user account");
+                const error = new Error(authError + "\nFailed to create user account");
                 error.step = 2;
                 error.details = authError;
                 throw error;
@@ -481,8 +481,7 @@ export default function Registration() {
             // Success - move to next step
             setStep(4);
         } catch (error) {
-            console.error("Registration error:", error);
-            console.error("Error message:", error.message);
+            console.error("Registration error:", error.message);
             console.error("Error step:", error.step);
             console.error("Error details:", error.details);
             console.error("Stack trace:", error.stack);  
