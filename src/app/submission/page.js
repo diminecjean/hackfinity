@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import TopBanner from "@/components/custom/top-banner";
+import { createClient } from "@/utils/supabase/component";
+import { uploadFileToSupabaseBucket } from "@/utils/supabase/storage";
+
+const supabase = createClient();
 
 const SubmissionPage = () => {
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
@@ -15,10 +19,50 @@ const SubmissionPage = () => {
         setter(file);
     };
 
-    const handleSubmit = () => {
-        alert("Form Submitted");
-        setSubmissionStatus("Submitted");
-        // Add your form submission logic here
+    const handleSubmit = async () => {
+        try {
+            if (!teamName || !category) {
+                alert("Please fill in all required fields!");
+                return;
+            }
+
+            const proposalPath = await uploadFileToSupabaseBucket(
+                "solutions_bucket",
+                `proposals/${teamName}-proposal-${Date.now()}`,
+                proposal,
+            );
+
+            const pitchingSlidesPath = await uploadFileToSupabaseBucket(
+                "solutions_bucket",
+                `pitching_slides/${teamName}-pitching-slides-${Date.now()}`,
+                pitchingSlides,
+            );
+
+            if (!proposalPath || !pitchingSlidesPath) {
+                alert("File upload failed. Please try again.");
+                return;
+            }
+
+            const { data, error } = await supabase.from("Solutions").insert([
+                {
+                    proposal: proposalPath,
+                    pitching_slides: pitchingSlidesPath,
+                    solution_status: "Submitted",
+                },
+            ]);
+
+            if (error) {
+                console.error("Error submitting solution:", error.message);
+                alert("Submission failed. Please try again.");
+                return;
+            }
+
+            setSubmissionStatus("Submitted");
+            alert("Submission successful!");
+        } catch (err) {
+            console.error("Error during submission:", err);
+            alert("An unexpected error occurred. Please try again.");
+        }
     };
 
     return (
@@ -34,7 +78,11 @@ const SubmissionPage = () => {
                             <span className='font-bold text-xl'>Submission Status:</span>
                             <span className='ml-2 px-2 py-1 text-black rounded'>
                                 <div
-                                    className={`w-24 h-8 flex items-center justify-center ${submissionStatus === "Draft" ? "bg-red-light" : "bg-green-light"} text-base font-semibold rounded`}
+                                    className={`w-24 h-8 flex items-center justify-center ${
+                                        submissionStatus === "Draft"
+                                            ? "bg-red-light"
+                                            : "bg-green-light"
+                                    } text-base font-semibold rounded`}
                                 >
                                     {submissionStatus}
                                 </div>
