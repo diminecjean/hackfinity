@@ -15,6 +15,8 @@ export const fetchTeamsData = async () => {
             .from("Team")
             .select("team_name, team_code, solution_id");
 
+        console.log({ teams });
+
         if (teamsError) {
             throw new Error("Error fetching teams", teamsError);
         }
@@ -22,20 +24,27 @@ export const fetchTeamsData = async () => {
         // 2. Fetch data from other tables associated to team
         const teamData = await Promise.all(
             teams.map(async (team) => {
+                let solutionData =  null;
+
                 // 2.1 Fetch solution data for each team
-                const { data: solution, error: solutionError } = await supabase
-                    .from("Solutions")
-                    .select("solution_status, proposal, pitching_slides")
-                    .eq("solution_id", team.solution_id)
-                    .single();
-
-                console.log({ proposal: solution.proposal, slides: solution.pitching_slides });
-
-                if (solutionError) {
-                    console.log(team.solution_id);
-                    console.error("Error fetching solution:", solutionError);
-                    return null;
-                }
+                if (team.solution_id) {
+                    const { data: solution, error: solutionError } = await supabase
+                        .from("Solutions")
+                        .select("solution_status, proposal, pitching_slides")
+                        .eq("solution_id", team.solution_id)
+                        .single();
+    
+                    console.log({ proposal: solution.proposal, slides: solution.pitching_slides });
+    
+                    if (solutionError) {
+                        console.log(team.solution_id);
+                        console.error("Error fetching solution:", solutionError);
+                        return null;
+                    }
+                    
+                    solutionData = solution;
+                    
+                };
 
                 // 2.2 Fetch number of participants for each team
                 // Can fetch participant info if needed
@@ -54,9 +63,9 @@ export const fetchTeamsData = async () => {
                     name: team.team_name,
                     code: team.team_code,
                     members: `${participants.length}/5`,
-                    submission: solution?.solution_status || SolutionStatus.None,
-                    proposal: solution?.proposal || SolutionStatus.None,
-                    pitching_slides: solution?.pitching_slides || SolutionStatus.None,
+                    submission: solutionData?.solution_status || SolutionStatus.None,
+                    proposal: solutionData?.proposal || SolutionStatus.None,
+                    pitching_slides: solutionData?.pitching_slides || SolutionStatus.None,
                 };
             }),
         );
@@ -69,3 +78,5 @@ export const fetchTeamsData = async () => {
         return null;
     }
 };
+
+

@@ -5,6 +5,7 @@ import TopBanner from "@/components/custom/top-banner";
 import { FaTimes } from "react-icons/fa";
 import Link from "next/link";
 import { PortalDialog } from "@/components/custom/portal-dialog";
+import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 
 import {
     Dialog,
@@ -142,6 +143,14 @@ export default function Resources() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newResourceTitle, setNewResourceTitle] = useState("");
     const [newResourceFileLink, setNewResourceFileLink] = useState("");
+    
+    useEffect(() => {
+        const checkUser = async () => {
+            const userSession = await fetchLoggedInUser();
+            console.log({userSession});
+        }
+        checkUser();
+    }, []);
     
     const handleAddResource = async () => {
         if (!newResourceTitle || !newResourceFileLink) return;

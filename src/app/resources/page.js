@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/component";
+import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 
 const supabase = createClient();
+
 
 const sections = [
     {
@@ -25,6 +27,7 @@ const sections = [
 ];
 
 async function fetchResources() {
+
     // Fetch resources from the database
     try {
         const { data, error } = await supabase.from("Resource").select("*");
@@ -52,6 +55,15 @@ function handleDownload(fileName, displayName) {
 
 
 export default function Resources() {
+    // Check if user is logged in
+    useEffect(() => {
+        const checkUser = async () => {
+            const userSession = await fetchLoggedInUser();
+            console.log({userSession});
+        }
+        checkUser();
+    }, []);
+
     const [resources, setResources] = useState([]);
 
     useEffect(() => {
