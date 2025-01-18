@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/component";
+import { signup } from "@/utils/supabase/auth";
 
 const NEW_TEAM = "newTeam";
 const EXISTING_TEAM = "existingTeam";
@@ -409,24 +410,14 @@ export default function Registration() {
     useEffect(() => {
         setIsStepValid(validateStep(step));
     }, [step, teamType]);
-
+    
     const onSubmit = async (values) => {
         console.log("Submitting registration:", values);
+
+        let user; // to be available in catch block
+
         try {
-            // Step 1: Create auth user
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: values.email,
-                password: values.password,
-            });
-
-            if (authError) {
-                console.error("Auth error:", authError);
-                throw new Error("Failed to create user account");
-            }
-
-            const user = authData.user;
-
-            // Step 2: Create team if leader
+            // Step 1: Create team if leader
             console.log({ role });
             if (role === "leader") {
                 const { error: teamError } = await supabase.from("Team").insert([
@@ -437,10 +428,32 @@ export default function Registration() {
                 ]);
                 if (teamError) {
                     console.error("Team error:", teamError);
-                    throw new Error("Failed to create team");
+                    const error = new Error(teamError.details + "\nFailed to create team");
+                    error.step = 1;
+                    error.details = teamError;
+                    throw error;
                 }
                 console.log("Created team:", teamError);
             }
+
+            // Step 2: Create auth user
+            const formData = new FormData();
+            formData.append('email', values.email);
+            formData.append('password', values.password);
+            
+            // Server-side signup
+            const { data: authData, error: authError} = await signup(formData);
+
+            if (authError) {
+                console.error("Auth error:", authError);
+                const error = new Error(authError + "\nFailed to create user account");
+                error.step = 2;
+                error.details = authError;
+                throw error;
+            };
+
+            // to match user row id later
+            const user = authData.user;
 
             // Step 3: Create participant profile
             const { error: participantError } = await supabase.from("Participants").insert([
@@ -459,14 +472,31 @@ export default function Registration() {
 
             if (participantError) {
                 console.error("Participant error:", participantError);
-                throw new Error("Failed to create participant profile");
+                const error = new Error("Failed to create participant profile");
+                error.step = 3;
+                error.details = participantError;
+                throw error;
             }
 
             // Success - move to next step
             setStep(4);
-        } catch (err) {
-            console.error("Registration error:", err);
-            alert(err.message || "Registration failed. Please try again.");
+        } catch (error) {
+            console.error("Registration error:", error.message);
+            console.error("Error step:", error.step);
+            console.error("Error details:", error.details);
+            console.error("Stack trace:", error.stack);  
+            alert(error.message || "Registration failed. Please try again.");
+
+            // Rollback completed steps
+            if (error.step >= 2) {
+                console.log("Rolling back team creation...");
+                await supabase.from('Team').delete().eq('team_name', values.team_name);
+                setCodeGenerated(false);
+              }
+            if (error.step >= 3) {
+                console.log("Rolling back user auth creation...");
+                await supabase.auth.admin.deleteUser(user.id);
+            }
         }
     };
 
