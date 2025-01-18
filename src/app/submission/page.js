@@ -1,13 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TopBanner from "@/components/custom/top-banner";
 import { createClient } from "@/utils/supabase/component";
 import { uploadFileToSupabaseBucket } from "@/utils/supabase/storage";
+import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 
 const supabase = createClient();
 
 const SubmissionPage = () => {
+// Check if user is logged in
+useEffect(() => {
+    const checkUser = async () => {
+        const userSession = await fetchLoggedInUser();
+        console.log({userSession});
+    }
+    checkUser();
+}, []);
+
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
     const [teamName, setTeamName] = useState("");
     const [category, setCategory] = useState("");

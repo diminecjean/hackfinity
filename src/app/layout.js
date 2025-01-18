@@ -106,11 +106,12 @@ const Navbar = () => {
         };
     }, [prevScrollY]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setIsLoggedIn(false);
         setIsAdmin(false);
         setIsParticipant(false);
         setCurrentPage("/");
+        const { error } = await supabase.auth.signOut()
         window.location.href = "/";
     };
 
