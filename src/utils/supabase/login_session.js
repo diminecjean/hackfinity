@@ -23,7 +23,7 @@ export const fetchLoggedInUser = async () => {
             .from("Participants")
             .select("email")
             .eq("email", userData.user.email)
-            .single();
+            .maybeSingle();
 
         if (participantError) {
             console.error("Error checking participant status:", participantError);
@@ -31,12 +31,12 @@ export const fetchLoggedInUser = async () => {
         }
 
         // If not participant, check if admin
-        if (!participantData) {
+        if (!participantData || participantData.length === 0) {
             const { data: adminData, error: adminError } = await supabase
                 .from("Admin")
                 .select("admin_email")
                 .eq("admin_email", userData.user.email)
-                .single();
+                .maybeSingle();
 
             if (adminError) {
                 console.error("Error checking admin status:", adminError);
