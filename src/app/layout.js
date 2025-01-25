@@ -135,6 +135,7 @@ const Navbar = () => {
         };
 
         fetchUser();
+        setCurrentPage(window.location.pathname);
     }, []);
 
     const handleLogout = async () => {
