@@ -179,7 +179,9 @@ const Navbar = () => {
                 alert("Authentication failed: " + authError.message);
                 return;
             }
-
+            
+            window.location.href = "/";
+            setCurrentPage("/");
             setIsLoggedIn(true);
             setOpen(false);
 
