@@ -425,7 +425,8 @@ export default function Registration() {
 
     // Update validation status whenever form values change
     useEffect(() => {
-        const subscription = form.watch((value, { name, type }) => {
+        const subscription = form.watch(async(value, { name, type }) => {
+            await form.trigger();
             setIsStepValid(validateStep(step));
         });
         return () => subscription.unsubscribe();
