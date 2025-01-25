@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/utils/supabase/component";
 import { signup } from "@/utils/supabase/auth";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const NEW_TEAM = "newTeam";
 const EXISTING_TEAM = "existingTeam";
@@ -62,25 +63,49 @@ const FormFieldComponent = ({
     placeholder,
     type = "text",
     disabled,
-}) => (
-    <FormField
-        control={control}
-        name={name}
-        render={({ field }) => (
-            <FormItem>
-                <FormLabel className={`text-white text-lg`}>
-                    {label} <span className='text-[#ff0000]'>*</span>
-                    <br />
-                    <span className='text-yellow-mid text-sm font-medium'>{description}</span>
-                </FormLabel>
-                <FormControl>
-                    <Input placeholder={placeholder} disabled={disabled} type={type} {...field} />
-                </FormControl>
-                <FormMessage />
-            </FormItem>
-        )}
-    />
-);
+}) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    return (
+        <FormField
+            control={control}
+            name={name}
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel className={`text-white text-lg`}>
+                        {label} <span className='text-[#ff0000]'>*</span>
+                        <br />
+                        <span className='text-yellow-mid text-sm font-medium'>{description}</span>
+                    </FormLabel>
+                    <FormControl>
+                        <div className="relative">
+                            <Input
+                                placeholder={placeholder}
+                                disabled={disabled}
+                                type={type === "password" && showPassword ? "text" : type}
+                                {...field}
+                            />
+                            {type === "password" && (
+                                <button
+                                    type="button"
+                                    onClick={togglePasswordVisibility}
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-black"
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            )}
+                        </div>
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )}
+        />
+    );
+};
 
 function PersonalInformation({ control }) {
     return (
