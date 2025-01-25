@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/component";
 
 const supabase = createClient();
 
-const SolutionStatus = {
+export const SolutionStatus = {
     Submitted: "Submitted",
     Pending: "Pending",
     None: "None",
@@ -13,7 +13,7 @@ export const fetchTeamsData = async () => {
         // 1. Fetch team data
         const { data: teams, error: teamsError } = await supabase
             .from("Team")
-            .select("team_name, team_code");
+            .select("team_id, team_name, team_code");
 
         console.log({ teams });
 
@@ -27,22 +27,27 @@ export const fetchTeamsData = async () => {
                 let solutionData = null;
 
                 // 2.1 Fetch solution data for each team
-                if (team.solution_id) {
+                if (team.team_id) {
                     const { data: solution, error: solutionError } = await supabase
                         .from("Solutions")
                         .select("solution_status, proposal, pitching_slides")
                         .eq("team_id", team.team_id)
-                        .single();
-
-                    console.log({ proposal: solution.proposal, slides: solution.pitching_slides });
-
-                    if (solutionError) {
-                        console.log(team.solution_id);
-                        console.error("Error fetching solution:", solutionError);
-                        return null;
-                    }
-
-                    solutionData = solution;
+                        .maybeSingle();
+                        
+                        if (solutionError) {
+                            console.error("Error fetching solution:", solutionError);
+                            solutionData = null;
+                            return null;
+                        }
+                        
+                        // Check if solution is null (no matching record)
+                        if (!solution) {
+                            solutionData = null;
+                        } else {
+                            console.log({ proposal: solution.proposal, slides: solution.pitching_slides });
+                            solutionData = solution;
+                        }
+                        
                 }
 
                 // 2.2 Fetch number of participants for each team
