@@ -1,10 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import TopBanner from "@/components/custom/top-banner";
+import Link from "next/link";
 import { PortalDialog } from "@/components/custom/portal-dialog";
 import { Dialog, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { fetchTeamsData } from "./api";
+import { fetchLoggedInUser } from "@/utils/supabase/login_session";
+import { UserRole } from "@/constants";
 
 const TeamsTable = ({ teams }) => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -90,7 +93,7 @@ const TeamsTable = ({ teams }) => {
                                     <span>Submission Status</span>
                                     <span>:</span>
                                     <span
-                                        className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === "Submitted" ? "bg-green-light" : "bg-orange-mid"}`}
+                                        className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === "Submitted" ? "bg-green-light" : selectedTeam.submission === "Pending" ? "bg-orange-mid" : "bg-grey"}`}
                                     >
                                         {selectedTeam.submission}
                                     </span>
@@ -128,6 +131,7 @@ const TeamsTable = ({ teams }) => {
 
 const TeamsPage = () => {
     const [teams, setTeams] = useState([]);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const loadTeams = async () => {
@@ -135,7 +139,17 @@ const TeamsPage = () => {
             setTeams(data);
         };
 
+        const fetchUser = async () => {
+            const user = await fetchLoggedInUser();
+            if (!!user || user.role != UserRole.ADMIN){
+                setIsAdmin(false);
+            } else {
+                setIsAdmin(true);
+            }
+        };
+
         loadTeams();
+        fetchUser();
     }, []);
 
     return (
@@ -147,6 +161,15 @@ const TeamsPage = () => {
             {!teams ? (
                 <div className='flex max-w-6xl mx-auto mt-10 justify-center'>
                     Error loading teams, please refresh or try again later.
+                </div>
+            ) : !isAdmin ? (
+                <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                    <div>You are not authorized to view this page.</div>
+                    <div>
+                        <Link href='/' className='underline text-blue-mid hover:text-blue-light'>
+                            Return to Homepage
+                        </Link>
+                    </div>
                 </div>
             ) : (
                 <TeamsTable teams={teams} />

@@ -15,6 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { fetchLoggedInUser } from "@/utils/supabase/login_session";
+import { UserRole } from "@/constants";
 
 import localFont from "next/font/local";
 import "./globals.css";
@@ -34,18 +36,25 @@ const geistMono = localFont({
 
 const Navbar = () => {
     const router = useRouter();
+
+    // For navbar state
     const [currentPage, setCurrentPage] = useState("/");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isParticipant, setIsParticipant] = useState(false);
+    
+    // For navbar frontend
     const [navbarVisible, setNavbarVisible] = useState(true);
     const [prevScrollY, setPrevScrollY] = useState(0);
+    
+    // For login dialog
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
 
+    // Supabase
     const supabase = createClient();
 
     const navLinks = [
@@ -93,6 +102,7 @@ const Navbar = () => {
         },
     ];
 
+    // For navbar appear when scrolling up and disappear when scrolling down
     useEffect(() => {
         const handleScroll = () => {
             const scrollY = window.scrollY;
@@ -106,13 +116,36 @@ const Navbar = () => {
         };
     }, [prevScrollY]);
 
+    // Fetch user role on mount and refresh
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = await fetchLoggedInUser();
+            if (user) {
+                setIsLoggedIn(true);
+                if (user.role === UserRole.ADMIN) {
+                    setIsAdmin(true);
+                } else if (user.role === UserRole.PARTICIPANT) {
+                    setIsParticipant(true);
+                }
+            } else {
+                setIsLoggedIn(false);
+                setIsAdmin(false);
+                setIsParticipant(false);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
     const handleLogout = async () => {
         setIsLoggedIn(false);
         setIsAdmin(false);
         setIsParticipant(false);
         setCurrentPage("/");
         const { error } = await supabase.auth.signOut()
+        console.log({error});
         window.location.href = "/";
+        alert("You have been logged out successfully.");
     };
 
     const renderLoginButton = () => (
@@ -137,70 +170,20 @@ const Navbar = () => {
         const email = formData.email.toLowerCase();
 
         try {
-            let isAdmin = false;
-            let isParticipant = false;
+            const { data, error: authError } = await supabase.auth.signInWithPassword({
+                email,
+                password: formData.password,
+            });
 
-            // Check "Admin" table
-            const { data: adminData, error: adminError } = await supabase
-                .from("Admin")
-                .select("admin_email")
-                .eq("admin_email", email)
-                .single();
-            if (adminData) isAdmin = true;
-
-            // Check "Participants" table
-            const { data: participantData, error: participantError } = await supabase
-                .from("Participants")
-                .select("email")
-                .eq("email", email)
-                .single();
-            if (participantData) isParticipant = true;
-
-            if (isAdmin || isParticipant) {
-                // Login with Supabase Auth
-                const { data, error: authError } = await supabase.auth.signInWithPassword({
-                    email,
-                    password: formData.password,
-                });
-
-                if (authError) {
-                    alert("Authentication failed: " + authError.message);
-                    return;
-                }
-
-                setIsLoggedIn(true);
-                setIsAdmin(isAdmin);
-                setIsParticipant(isParticipant);
-                setOpen(false);
-
-                // Redirect based on roles
-                if (isAdmin && isParticipant) {
-                    const role = window.confirm("You are both Admin and Participant. Do you want to log in as Admin?")
-                        ? "admin"
-                        : "participant";
-                
-                    console.log("role:", role);
-                    
-                    if (role === "admin") {
-                        isParticipant = false; // This directly modifies the variable, but it does NOT update React state or trigger a re-render
-                        setIsParticipant(isParticipant); // This updates the React state properly and triggers a re-render
-                    } else {
-                        isAdmin = false; // This directly modifies the variable, but it does NOT update React state or trigger a re-render
-                        setIsAdmin(isAdmin); // This updates the React state properly and triggers a re-render
-                    }
-                
-                } else if (isAdmin) {
-                    setCurrentPage("/");
-                    router.push("/");
-                } else if (isParticipant) {
-                    setCurrentPage("/");
-                    router.push("/");
-                }
-
-                alert(`Successfully logged in as ${isAdmin ? "Admin" : "Participant"}!`);
-            } else {
-                alert("No account found with this email.");
+            if (authError) {
+                alert("Authentication failed: " + authError.message);
+                return;
             }
+
+            setIsLoggedIn(true);
+            setOpen(false);
+
+            // Note: user role check based on table data is done in fetchLoggedInUser()
         } catch (error) {
             console.error("Error during login:", error);
             alert("An error occurred. Please try again later.");

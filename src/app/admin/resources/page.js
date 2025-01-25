@@ -6,6 +6,7 @@ import { FaTimes } from "react-icons/fa";
 import Link from "next/link";
 import { PortalDialog } from "@/components/custom/portal-dialog";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
+import { UserRole } from "@/constants";
 
 import {
     Dialog,
@@ -16,9 +17,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-// TODO: This is just dummy user role, replace with actual user role logic after we have auth
-const userRole = "admin";
 
 const supabase = createClient();
 const sections = [
@@ -143,11 +141,17 @@ export default function Resources() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newResourceTitle, setNewResourceTitle] = useState("");
     const [newResourceFileLink, setNewResourceFileLink] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
     
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
             console.log({userSession});
+            if (!!userSession || userSession.role != UserRole.ADMIN){
+                setIsAdmin(false);
+            } else {
+                setIsAdmin(true);
+            }
         }
         checkUser();
     }, []);
@@ -182,91 +186,101 @@ export default function Resources() {
     if (error) return <div>Error loading resources: {error}</div>;
 
     return (
-        // ... rest of your JSX remains the same, but update these parts:
-        // 1. Pass handleRemoveResource instead of removeResource to Section
-        // 2. Use groupedResources directly from the hook
-        <div className='font-[family-name:var(--font-geist-sans)]'>
+        <div className='min-h-screen bg-blue-900 text-white'>
             <TopBanner
                 title='Resources Center'
                 description='Access all the resources you need for BizMaker here.'
             />
-            <div className='w-full flex flex-col gap-4 my-24'>
-                {sections.map((section) => (
-                    <Section
-                        key={section.id}
-                        title={section.title}
-                        resources={groupedResources[section.title] ?? []}
-                        bgColor={section.bgColor}
-                        isAdmin={userRole === "admin"}
-                        onAdd={() => {setDialogOpen(true); setSection(section.title);}}
-                        onRemove={handleRemoveResource}
-                    />
-                ))}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <PortalDialog>
-                    <DialogHeader>
-                        <DialogTitle className='px-4 text-white font-semibold text-2xl'>
-                            Login to Your Profile
-                        </DialogTitle>
-                    </DialogHeader>
-                        <div className='grid gap-4 p-4 text-white'>
-                            <div className='grid grid-cols-1 items-center gap-4'>
-                                <div>
-                                    <Label
-                                        htmlFor='name'
-                                        className='text-right text-white'
+            {
+                !isAdmin ? (
+                    <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                    <div>You are not authorized to view this page.</div>
+                    <div>
+                        <Link href='/' className='underline text-blue-mid hover:text-blue-light'>
+                            Return to Homepage
+                        </Link>
+                    </div>
+                </div>
+                ) : (
+                    <div className='w-full flex flex-col gap-4 my-24'>
+
+                        {sections.map((section) => (
+                            <Section
+                                key={section.id}
+                                title={section.title}
+                                resources={groupedResources[section.title] ?? []}
+                                bgColor={section.bgColor}
+                                onAdd={() => {setDialogOpen(true); setSection(section.title);}}
+                                onRemove={handleRemoveResource}
+                            />
+                        ))}
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                        <PortalDialog>
+                            <DialogHeader>
+                                <DialogTitle className='px-4 text-white font-semibold text-2xl'>
+                                    Login to Your Profile
+                                </DialogTitle>
+                            </DialogHeader>
+                                <div className='grid gap-4 p-4 text-white'>
+                                    <div className='grid grid-cols-1 items-center gap-4'>
+                                        <div>
+                                            <Label
+                                                htmlFor='name'
+                                                className='text-right text-white'
+                                            >
+                                                Resouce Title
+                                            </Label>
+                                        </div>
+                                        <div>
+                                            <Input
+                                                className='col-span-3'
+                                                required
+                                                id='resource-title'
+                                                placeholder='Enter the title of the new resource'
+                                                value={newResourceTitle}
+                                                onChange={(e) => setNewResourceTitle(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='grid grid-cols-1 items-center gap-4'>
+                                        <div>
+                                            <Label
+                                                htmlFor='name'
+                                                className='text-right text-white'
+                                            >
+                                                Resource Link
+                                            </Label>
+                                        </div>
+                                        <div>
+                                            <Input
+                                                className='col-span-3'
+                                                required
+                                                id='resource-title'
+                                                placeholder='Paste the link of the new resource'
+                                                value={newResourceFileLink}
+                                                onChange={(e) => setNewResourceFileLink(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button
+                                        className='bg-blue-mid text-white px-4 py-2 rounded-xl'
+                                        onClick={() => handleAddResource()}
                                     >
-                                        Resouce Title
-                                    </Label>
-                                </div>
-                                <div>
-                                    <Input
-                                        className='col-span-3'
-                                        required
-                                        id='resource-title'
-                                        placeholder='Enter the title of the new resource'
-                                        value={newResourceTitle}
-                                        onChange={(e) => setNewResourceTitle(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className='grid grid-cols-1 items-center gap-4'>
-                                <div>
-                                    <Label
-                                        htmlFor='name'
-                                        className='text-right text-white'
-                                    >
-                                        Resource Link
-                                    </Label>
-                                </div>
-                                <div>
-                                    <Input
-                                        className='col-span-3'
-                                        required
-                                        id='resource-title'
-                                        placeholder='Paste the link of the new resource'
-                                        value={newResourceFileLink}
-                                        onChange={(e) => setNewResourceFileLink(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button
-                                className='bg-blue-mid text-white px-4 py-2 rounded-xl'
-                                onClick={() => handleAddResource()}
-                            >
-                                Add New Resource
-                            </Button>
-                        </DialogFooter>
-                </PortalDialog>
-            </Dialog>
-            </div>
+                                        Add New Resource
+                                    </Button>
+                                </DialogFooter>
+                        </PortalDialog>
+                    </Dialog>
+                    </div>
+                )
+            }
         </div>
     );
 }
 
-function Section({ title, resources, bgColor, isAdmin, onRemove, onAdd }) {
+function Section({ title, resources, bgColor, onRemove, onAdd }) {
     return (
         <section id={title.toLowerCase().replace(" ", "-")}>
             <div className={`w-full ${bgColor} px-24 py-4 flex justify-between items-center`}>
@@ -289,14 +303,12 @@ function Section({ title, resources, bgColor, isAdmin, onRemove, onAdd }) {
                         <Link href={resource.file_path}>
                             {resource.file_name}
                         </Link>
-                        {isAdmin && (
                             <button
                                 className='absolute top-0 right-0 mt-1 mr-1 p-0.5 text-white bg-red-mid rounded-full hover:bg-red-mid hover:bg-red-hover transition duration-300 ease-in-out ransform hover:scale-110'
                                 onClick={() => onRemove(resource.resource_id)}
                             >
                                 <FaTimes size={12} />
                             </button>
-                        )}
                     </div>
                 ))}
             </div>
