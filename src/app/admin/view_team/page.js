@@ -141,7 +141,7 @@ const TeamsPage = () => {
 
         const fetchUser = async () => {
             const user = await fetchLoggedInUser();
-            if (!!user || user.role != UserRole.ADMIN){
+            if (!user || user.role !== UserRole.ADMIN){
                 setIsAdmin(false);
             } else {
                 setIsAdmin(true);
@@ -151,6 +151,7 @@ const TeamsPage = () => {
         loadTeams();
         fetchUser();
     }, []);
+
 
     return (
         <div className='min-h-screen bg-blue-900 text-white'>
