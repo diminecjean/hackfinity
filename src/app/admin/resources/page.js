@@ -147,7 +147,7 @@ export default function Resources() {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
             console.log({userSession});
-            if (!!userSession || userSession.role != UserRole.ADMIN){
+            if (userSession.role != UserRole.ADMIN){
                 setIsAdmin(false);
             } else {
                 setIsAdmin(true);
@@ -155,6 +155,8 @@ export default function Resources() {
         }
         checkUser();
     }, []);
+
+    console.log({isAdmin});
     
     const handleAddResource = async () => {
         if (!newResourceTitle || !newResourceFileLink) return;
@@ -209,6 +211,7 @@ export default function Resources() {
                                 key={section.id}
                                 title={section.title}
                                 resources={groupedResources[section.title] ?? []}
+                                isAdmin={isAdmin}
                                 bgColor={section.bgColor}
                                 onAdd={() => {setDialogOpen(true); setSection(section.title);}}
                                 onRemove={handleRemoveResource}
@@ -280,7 +283,7 @@ export default function Resources() {
     );
 }
 
-function Section({ title, resources, bgColor, onRemove, onAdd }) {
+function Section({ title, resources, isAdmin, bgColor, onRemove, onAdd }) {
     return (
         <section id={title.toLowerCase().replace(" ", "-")}>
             <div className={`w-full ${bgColor} px-24 py-4 flex justify-between items-center`}>
