@@ -4,6 +4,8 @@ import TopBanner from "@/components/custom/top-banner";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/component";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
+import { retrieveFileSignedUrl } from "@/utils/supabase/storage";
+
 
 const supabase = createClient();
 
@@ -30,27 +32,24 @@ async function fetchResources() {
 
     // Fetch resources from the database
     try {
-        const { data, error } = await supabase.from("Resource").select("*");
+        const { data: resources, error } = await supabase.from("Resource").select("*");
         if (error) {
             console.error("Error fetching resources:", error.message);
             throw new Error("Error fetching resources");
         }
-        console.log({ data });
-        return data;
+
+        const updatedResources = await Promise.all(
+            resources.map(async (resource) => {
+                const signedUrl = await retrieveFileSignedUrl('resources_bucket', resource.file_path);
+                return { ...resource, path_name: signedUrl };
+            })
+        );
+        return updatedResources;
     } catch (err) {
         console.error("Resource error:", err);
         alert(err.message || "Error fetching resources, please try again later.");
         return [];
     }
-}
-
-function handleDownload(fileName, displayName) {
-    const link = document.createElement("a");
-    link.href = path.join("resources_docs", fileName);
-    link.setAttribute("download", displayName);
-    document.body.appendChild(link); // Append to the body to make sure the link is part of the DOM
-    link.click();
-    document.body.removeChild(link); // Clean up by removing the link after the click
 }
 
 
@@ -101,9 +100,7 @@ export default function Resources() {
                                 <Link
                                     key={resource.resource_id}
                                     className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                                    href={resource.file_path}
-                                    // Note: Either onClick download or hred redirection, not both at once
-                                    // onClick={() => handleDownload(resource.file_name, resource.file_name)}
+                                    href={resource.path_name || "#"}
                                 >
                                     {resource.file_name}
                                 </Link>
