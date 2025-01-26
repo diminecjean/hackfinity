@@ -5,10 +5,9 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/component";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { retrieveFileSignedUrl } from "@/utils/supabase/storage";
-
+import { UserRole } from "@/constants";
 
 const supabase = createClient();
-
 
 const sections = [
     {
@@ -29,7 +28,6 @@ const sections = [
 ];
 
 async function fetchResources() {
-
     // Fetch resources from the database
     try {
         const { data: resources, error } = await supabase.from("Resource").select("*");
@@ -40,9 +38,12 @@ async function fetchResources() {
 
         const updatedResources = await Promise.all(
             resources.map(async (resource) => {
-                const signedUrl = await retrieveFileSignedUrl('resources_bucket', resource.file_path);
+                const signedUrl = await retrieveFileSignedUrl(
+                    "resources_bucket",
+                    resource.file_path,
+                );
                 return { ...resource, path_name: signedUrl };
-            })
+            }),
         );
         return updatedResources;
     } catch (err) {
@@ -52,14 +53,20 @@ async function fetchResources() {
     }
 }
 
-
 export default function Resources() {
+    const [isParticipant, setIsParticipant] = useState(false);
+
     // Check if user is logged in
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
-            console.log({userSession});
-        }
+            console.log({ userSession });
+            if (userSession.role === UserRole.PARTICIPANT) {
+                setIsParticipant(true);
+            } else {
+                setIsParticipant(false);
+            }
+        };
         checkUser();
     }, []);
 
@@ -84,30 +91,48 @@ export default function Resources() {
     }, {});
 
     return (
-        <div className="font-[family-name:var(--font-geist-sans)]">
+        <div className='min-h-screen bg-blue-dark text-white'>
             <TopBanner
-                title="Resources Center"
-                description="Access all the resources you need for BizMaker here."
+                title='Resources Center'
+                description='Access all the resources you need for BizMaker here.'
             />
-            <div className="w-full flex flex-col gap-4 my-24">
-                {sections.map((section) => (
-                    <section key={section.id} id={section.id}>
-                        <div className={`w-full ${section.bgColor} px-24 py-4`}>
-                            <h1 className="text-2xl font-semibold">{section.title}</h1>
+            <div className='w-full flex flex-col gap-4'>
+                {!isParticipant ? (
+                    <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                        <div>
+                            You need to log in with a participant account to access this page.
                         </div>
-                        <div className="my-12 mx-24 flex gap-12 justify-start">
-                            {groupedResources[section.title]?.map((resource) => (
-                                <Link
-                                    key={resource.resource_id}
-                                    className="cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark"
-                                    href={resource.path_name || "#"}
-                                >
-                                    {resource.file_name}
-                                </Link>
-                            ))}
+                        <div>
+                            <Link
+                                href='/'
+                                className='underline text-blue-mid hover:text-blue-light'
+                            >
+                                Return to Homepage
+                            </Link>
                         </div>
-                    </section>
-                ))}
+                    </div>
+                ) : (
+                    <div className="my-24">
+                        {sections.map((section) => (
+                            <section key={section.id} id={section.id}>
+                                <div className={`w-full ${section.bgColor} px-24 py-4`}>
+                                    <h1 className='text-2xl font-semibold'>{section.title}</h1>
+                                </div>
+                                <div className='my-12 mx-24 flex gap-12 justify-start'>
+                                    {groupedResources[section.title]?.map((resource) => (
+                                        <Link
+                                            key={resource.resource_id}
+                                            className='cursor-pointer rounded-xl bg-yellow-mid px-8 py-4 font-medium hover:bg-yellow-dark'
+                                            href={resource.path_name || "#"}
+                                        >
+                                            {resource.file_name}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </section>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

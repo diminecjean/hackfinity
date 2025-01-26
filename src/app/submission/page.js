@@ -171,22 +171,22 @@ const SubmissionPage = () => {
                 description='Use this page to submit your final solution for BizMaker. Be sure to double-check all information before submitting!'
             />
             <div className='max-w-4xl mx-auto'>
-                <main className='mt-12 p-6 rounded-lg shadow-2xl'>
-                    {!isParticipant ? (
-                        <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
-                            <div>
-                                You need to log in with a participant account to access this page.
-                            </div>
-                            <div>
-                                <Link
-                                    href='/'
-                                    className='underline text-blue-mid hover:text-blue-light'
-                                >
-                                    Return to Homepage
-                                </Link>
-                            </div>
+                {!isParticipant ? (
+                    <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                        <div>
+                            You need to log in with a participant account to access this page.
                         </div>
-                    ) : (
+                        <div>
+                            <Link
+                                href='/'
+                                className='underline text-blue-mid hover:text-blue-light'
+                            >
+                                Return to Homepage
+                            </Link>
+                        </div>
+                    </div>
+                ) : (
+                    <main className='mt-12 p-6 rounded-lg shadow-2xl'>
                         <div className='mt-0'>
                             <div className='flex items-center'>
                                 <span className='font-bold text-xl'>Submission Status:</span>
@@ -304,8 +304,8 @@ const SubmissionPage = () => {
                                 </div>
                             </form>
                         </div>
-                    )}
-                </main>
+                    </main>
+                )}
             </div>
         </div>
     );
