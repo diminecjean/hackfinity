@@ -35,7 +35,7 @@ export const fetchParticipantSubmissionData = async (userEmail) => {
     // fetch submission status if there is one
     const {data: submission, error: submissionError} = await supabase
         .from("Solutions")
-        .select("solution_status, track")
+        .select("solution_status, track, proposal, pitching_slides")
         .eq("team_id", teamData.team_id)
         .maybeSingle();
 
@@ -48,6 +48,8 @@ export const fetchParticipantSubmissionData = async (userEmail) => {
             teamName: teamData.team_name,
             submissionTrack: null,
             submissionState: "Draft",
+            submissionProposal: "",
+            submissionSlides: "",
         }
     }
 
@@ -56,17 +58,49 @@ export const fetchParticipantSubmissionData = async (userEmail) => {
         teamName: teamData.team_name,
         submissionTrack: submission ? submission.track : null,
         submissionStatus: submission ? submission.solution_status : "Draft",
+        submissionProposal: submission ? submission.proposal : "",
+        submissionSlides: submission ? submission.pitching_slides : "",
     };
 }
 
-export const postParticipantSubmission = async (proposalPath, pitchingSlidesPath, SolutionStatus) => {
-    const { data, error } = await supabase.from("Solutions").insert([
-        {
-            proposal: proposalPath,
-            pitching_slides: pitchingSlidesPath,
-            solution_status: SolutionStatus,
-        },
-    ]);
+export const postParticipantSubmission = async (proposalPath, pitchingSlidesPath, solutionStatus, teamId, track) => {
+    switch (track) {
+        case "Track 1":
+            track = 1;
+            break;
+        case "Track 2":
+            track = 2;
+            break;
+        case "Track 3":
+            track = 3;
+            break;
+        default:
+            track = "";   
+    }
+    
+    const { data: solutionData, error: solutionError } = await supabase
+        .from("Solutions")
+        .select("solution_id, team_id")
+        .eq("team_id", teamId)
+        .maybeSingle();
+
+    if (solutionError) {
+        console.error("Error fetching solution data:", solutionError.message);
+        return false;
+    }
+
+    const upsertData = {
+        proposal: proposalPath,
+        track: track,
+        pitching_slides: pitchingSlidesPath,
+        solution_status: solutionStatus,
+        team_id: teamId,
+        ...(solutionData && { solution_id: solutionData.solution_id }), // Include solution_id only if solutionData exists
+    };
+
+    const { data, error } = await supabase
+        .from("Solutions")
+        .upsert([upsertData]);
 
     if (error) {
         console.error("Error submitting solution:", error.message);
@@ -75,4 +109,4 @@ export const postParticipantSubmission = async (proposalPath, pitchingSlidesPath
     }
 
     return true;
-}
+};
