@@ -56,9 +56,7 @@ function useResources() {
             // Get the signed URL for each resource
             const updatedResources = await Promise.all(
                 resources.map(async (resource) => {
-                    console.log({filepath: resource.file_path});
                     const signedUrl = await retrieveFileSignedUrl('resources_bucket', resource.file_path);
-                    console.log({signedUrl});
                     return { ...resource, path_name: signedUrl };
                 })
             );
@@ -78,8 +76,6 @@ function useResources() {
             alert("Please provide a resource name and file.");
             return;
         }
-
-        console.log(JSON.stringify({resourceFile},null,2));
         
         try {
             const resourcePath = await uploadFileToSupabaseBucket(
@@ -197,18 +193,12 @@ export default function Resources() {
         checkUser();
     }, []);
 
-    console.log({isAdmin});
-    console.log({newResourceFile});
-
     const handleFileUpload = (file) => {
         setNewResourceFile(file[0]);
-        console.log(file);
       };
     
     const handleAddResource = async () => {
         if (!newResourceTitle || !newResourceFile) return;
-
-        console.log(JSON.stringify({newResourceFile},null,2));
         
         const result = await addResource(newResourceTitle, newResourceFile, section);
         
