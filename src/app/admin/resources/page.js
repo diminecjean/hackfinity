@@ -49,20 +49,38 @@ function useResources() {
     // Fetch resources
     const fetchResources = useCallback(async () => {
         try {
-            setIsLoading(true);
-            const { data, error } = await supabase.from("Resource").select("*");
+            // setIsLoading(true);
+            const { data: resources, error } = await supabase.from("Resource").select("*");
             if (error) throw error;
-            setResources(data);
+
+            // Get the signed URL for each resource
+            const updatedResources = await Promise.all(
+                resources.map(async (resource) => {
+                    console.log({filepath: resource.file_path});
+                    const signedUrl = await retrieveFileSignedUrl('resources_bucket', resource.file_path);
+                    console.log({signedUrl});
+                    return { ...resource, path_name: signedUrl };
+                })
+            );
+            setResources(updatedResources);
         } catch (err) {
             setError(err.message);
             console.error("Error fetching resources:", err);
-        } finally {
+        } 
+        finally {
             setIsLoading(false);
         }
     }, []);
 
     // Add resource
     const addResource = useCallback(async (resourceName, resourceFile, section) => {
+        if (!resourceName || !resourceFile || !section) {
+            alert("Please provide a resource name and file.");
+            return;
+        }
+
+        console.log(JSON.stringify({resourceFile},null,2));
+        
         try {
             const resourcePath = await uploadFileToSupabaseBucket(
                 "resources_bucket",
@@ -97,8 +115,15 @@ function useResources() {
     }, []);
 
     // Remove resource
-    const removeResource = useCallback(async (resourceId) => {
+    const removeResource = useCallback(async (resourceId, fileName) => {
         try {
+            const { data, error: removeError } = await supabase
+                .storage
+                .from('resources_bucket')
+                .remove(fileName);
+            
+            if (removeError) throw removeError;
+
             const { error } = await supabase
                 .from("Resource")
                 .delete()
@@ -119,7 +144,7 @@ function useResources() {
     // Load resources on mount
     useEffect(() => {
         fetchResources();
-    }, [fetchResources]);
+    }, [fetchResources, addResource, removeResource]);
 
     // Group resources by section
     const groupedResources = resources.reduce((acc, resource) => {
@@ -149,7 +174,8 @@ export default function Resources() {
         isLoading,
         error,
         addResource,
-        removeResource
+        removeResource,
+        refreshResources,
     } = useResources();
     
     const [section, setSection] = useState({});
@@ -175,12 +201,14 @@ export default function Resources() {
     console.log({newResourceFile});
 
     const handleFileUpload = (file) => {
-        setNewResourceFile(file);
+        setNewResourceFile(file[0]);
         console.log(file);
       };
     
     const handleAddResource = async () => {
         if (!newResourceTitle || !newResourceFile) return;
+
+        console.log(JSON.stringify({newResourceFile},null,2));
         
         const result = await addResource(newResourceTitle, newResourceFile, section);
         
@@ -190,13 +218,14 @@ export default function Resources() {
             setNewResourceTitle("");
             setNewResourceFile("");
             setDialogOpen(false);
+            refreshResources();
         } else {
             alert(`Failed to add resource: ${result.error}`);
         }
     };
 
-    const handleRemoveResource = async (resourceId) => {
-        const result = await removeResource(resourceId);
+    const handleRemoveResource = async (resourceId, fileName) => {
+        const result = await removeResource(resourceId, fileName);
         
         if (result.success) {
             alert("Resource removed successfully!");
@@ -205,7 +234,19 @@ export default function Resources() {
         }
     };
 
-    if (isLoading) return <div>Loading resources...</div>;
+    if (isLoading) {
+        return (
+            <div className='min-h-screen bg-blue-900 text-white'>
+                <TopBanner
+                    title='Resources Center'
+                    description='Access all the resources you need for BizMaker here.'
+                />
+                <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                    <div>Loading resources...</div>
+                </div>
+            </div>
+        );
+    }
     if (error) return <div>Error loading resources: {error}</div>;
 
     return (
@@ -242,7 +283,7 @@ export default function Resources() {
                         <PortalDialog>
                             <DialogHeader>
                                 <DialogTitle className='px-4 text-white font-semibold text-2xl'>
-                                    Upload your resource
+                                    Upload Resource to {section.sectionTitle}
                                 </DialogTitle>
                             </DialogHeader>
                                 <div className='grid gap-4 p-4 text-white'>
@@ -319,12 +360,12 @@ function Section({ title, resources, isAdmin, bgColor, onRemove, onAdd }) {
                         key={resource.resource_id}
                         className='relative rounded-xl bg-yellow-mid px-8 py-4 font-medium'
                     >
-                        <Link href={resource.file_path}>
+                        <Link href={resource.path_name??'#'}>
                             {resource.file_name}
                         </Link>
                             <button
                                 className='absolute top-0 right-0 mt-1 mr-1 p-0.5 text-white bg-red-mid rounded-full hover:bg-red-mid hover:bg-red-hover transition duration-300 ease-in-out ransform hover:scale-110'
-                                onClick={() => onRemove(resource.resource_id)}
+                                onClick={() => onRemove(resource.resource_id, resource.file_name)}
                             >
                                 <FaTimes size={12} />
                             </button>
