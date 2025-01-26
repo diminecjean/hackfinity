@@ -5,25 +5,45 @@ import TopBanner from "@/components/custom/top-banner";
 import { createClient } from "@/utils/supabase/component";
 import { uploadFileToSupabaseBucket } from "@/utils/supabase/storage";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
+import { fetchParticipantSubmissionData, postParticipantSubmission } from "./api";
 
 const supabase = createClient();
 
 const SubmissionPage = () => {
-// Check if user is logged in
-useEffect(() => {
-    const checkUser = async () => {
-        const userSession = await fetchLoggedInUser();
-        console.log({userSession});
-    }
-    checkUser();
-}, []);
-
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
     const [teamName, setTeamName] = useState("");
-    const [category, setCategory] = useState("");
+    const [track, setTrack] = useState("");
     const [proposal, setProposal] = useState(null);
     const [pitchingSlides, setPitchingSlides] = useState(null);
 
+    // Check if user is logged in
+    useEffect(() => {
+        const checkUser = async () => {
+            const userSession = await fetchLoggedInUser();
+            console.log({userSession});
+
+            const submissionData = await fetchParticipantSubmissionData(userSession.email);
+            setSubmissionStatus(submissionData.submissionStatus);
+            setTeamName(submissionData.teamName);
+
+            switch(submissionData.submissionTrack){
+                case '1':
+                    setTrack("Track 1");
+                    break;
+                case '2':
+                    setTrack("Track 2");
+                    break;
+                case '3':
+                    setTrack("Track 3");
+                    break;
+                default:
+                    setTrack("Select a Track");
+            }
+        };
+        checkUser();
+    }, []);
+    
+    console.log({submissionStatus, teamName, track});
     const handleFileUpload = (e, setter) => {
         const file = e.target.files[0];
         setter(file);
@@ -31,7 +51,7 @@ useEffect(() => {
 
     const handleSubmit = async () => {
         try {
-            if (!teamName || !category) {
+            if (!teamName || !track) {
                 alert("Please fill in all required fields!");
                 return;
             }
@@ -53,22 +73,13 @@ useEffect(() => {
                 return;
             }
 
-            const { data, error } = await supabase.from("Solutions").insert([
-                {
-                    proposal: proposalPath,
-                    pitching_slides: pitchingSlidesPath,
-                    solution_status: "Submitted",
-                },
-            ]);
-
-            if (error) {
-                console.error("Error submitting solution:", error.message);
-                alert("Submission failed. Please try again.");
-                return;
+            // TODO: add submission status based on save/submit
+            const submission = postParticipantSubmission(proposalPath, pitchingSlidesPath, SolutionStatus.Submitted);
+            if (submission){
+                setSubmissionStatus("Submitted");
+                alert("Submission successful!");
             }
 
-            setSubmissionStatus("Submitted");
-            alert("Submission successful!");
         } catch (err) {
             console.error("Error during submission:", err);
             alert("An unexpected error occurred. Please try again.");
@@ -114,13 +125,13 @@ useEffect(() => {
                                 <label className='block text-lg font-semibold'>Track:</label>
                                 <select
                                     className='w-full mt-2 p-2 font-medium rounded bg-grey-dark border border-blue focus:ring-2 focus:ring-yellow-mid text-black'
-                                    value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
+                                    value={track}
+                                    onChange={(e) => setTrack(e.target.value)}
                                 >
                                     <option value=''>Select a track</option>
-                                    <option value='category1'>Track 1</option>
-                                    <option value='category2'>Track 2</option>
-                                    <option value='category3'>Track 3</option>
+                                    <option value='Track 1'>Track 1</option>
+                                    <option value='Track 2'>Track 2</option>
+                                    <option value='Track 3'>Track 3</option>
                                 </select>
                             </div>
 
