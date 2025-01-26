@@ -83,7 +83,6 @@ const SubmissionPage = () => {
                 alert("Please fill in all required fields!");
                 return;
             }
-            console.log("inhandlesubmit", { proposal, pitchingSlides });
 
             const proposalPath = await uploadFileToSupabaseBucket(
                 "solutions_bucket",

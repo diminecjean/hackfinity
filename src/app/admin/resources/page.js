@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/component";
+import { uploadFileToSupabaseBucket, retrieveFileSignedUrl } from "@/utils/supabase/storage";
+
 import TopBanner from "@/components/custom/top-banner";
 import { FaTimes } from "react-icons/fa";
 import Link from "next/link";
@@ -17,6 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FileUpload } from "@/components/ui/file-upload";
+
 
 const supabase = createClient();
 const sections = [
@@ -58,14 +62,25 @@ function useResources() {
     }, []);
 
     // Add resource
-    const addResource = useCallback(async (resourceName, resourceLink, section) => {
+    const addResource = useCallback(async (resourceName, resourceFile, section) => {
         try {
+            const resourcePath = await uploadFileToSupabaseBucket(
+                "resources_bucket",
+                `${section.sectionId}/${resourceName}-${Date.now()}`,
+                resourceFile
+            )
+
+            if (!resourcePath) {
+                alert("File upload failed. Please try again.");
+                return;
+            }
+
             const { data, error } = await supabase
                 .from("Resource")
                 .insert([{
                     file_name: resourceName,
-                    file_path: resourceLink,
-                    section: section
+                    file_path: resourcePath,
+                    section: section.sectionTitle,
                 }])
                 .select();
 
@@ -137,10 +152,10 @@ export default function Resources() {
         removeResource
     } = useResources();
     
-    const [section, setSection] = useState("");
+    const [section, setSection] = useState({});
     const [dialogOpen, setDialogOpen] = useState(false);
     const [newResourceTitle, setNewResourceTitle] = useState("");
-    const [newResourceFileLink, setNewResourceFileLink] = useState("");
+    const [newResourceFile, setNewResourceFile] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
     
     useEffect(() => {
@@ -157,17 +172,23 @@ export default function Resources() {
     }, []);
 
     console.log({isAdmin});
+    console.log({newResourceFile});
+
+    const handleFileUpload = (file) => {
+        setNewResourceFile(file);
+        console.log(file);
+      };
     
     const handleAddResource = async () => {
-        if (!newResourceTitle || !newResourceFileLink) return;
+        if (!newResourceTitle || !newResourceFile) return;
         
-        const result = await addResource(newResourceTitle, newResourceFileLink, section);
+        const result = await addResource(newResourceTitle, newResourceFile, section);
         
         if (result.success) {
             alert(`Resource "${newResourceTitle}" added successfully!`);
             // Reset form
             setNewResourceTitle("");
-            setNewResourceFileLink("");
+            setNewResourceFile("");
             setDialogOpen(false);
         } else {
             alert(`Failed to add resource: ${result.error}`);
@@ -213,7 +234,7 @@ export default function Resources() {
                                 resources={groupedResources[section.title] ?? []}
                                 isAdmin={isAdmin}
                                 bgColor={section.bgColor}
-                                onAdd={() => {setDialogOpen(true); setSection(section.title);}}
+                                onAdd={() => {setDialogOpen(true); setSection({sectionTitle: section.title, sectionId: section.id});}}
                                 onRemove={handleRemoveResource}
                             />
                         ))}
@@ -221,7 +242,7 @@ export default function Resources() {
                         <PortalDialog>
                             <DialogHeader>
                                 <DialogTitle className='px-4 text-white font-semibold text-2xl'>
-                                    Login to Your Profile
+                                    Upload your resource
                                 </DialogTitle>
                             </DialogHeader>
                                 <div className='grid gap-4 p-4 text-white'>
@@ -231,7 +252,7 @@ export default function Resources() {
                                                 htmlFor='name'
                                                 className='text-right text-white'
                                             >
-                                                Resouce Title
+                                                Resource Title
                                             </Label>
                                         </div>
                                         <div>
@@ -251,17 +272,12 @@ export default function Resources() {
                                                 htmlFor='name'
                                                 className='text-right text-white'
                                             >
-                                                Resource Link
+                                                Upload Resource File
                                             </Label>
                                         </div>
                                         <div>
-                                            <Input
-                                                className='col-span-3'
-                                                required
-                                                id='resource-title'
-                                                placeholder='Paste the link of the new resource'
-                                                value={newResourceFileLink}
-                                                onChange={(e) => setNewResourceFileLink(e.target.value)}
+                                            <FileUpload 
+                                                onChange={handleFileUpload}
                                             />
                                         </div>
                                     </div>
