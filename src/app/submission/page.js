@@ -27,7 +27,6 @@ const SubmissionPage = () => {
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
-            console.log({ userSession });
             if (userSession.role === UserRole.PARTICIPANT) setIsParticipant(true);
             else setIsParticipant(false);
 
@@ -62,18 +61,12 @@ const SubmissionPage = () => {
                     "solutions_bucket",
                     submissionData.submissionSlides,
                 );
-                console.log({ proposalUrl, slidesUrl });
                 setFileUrls({ proposalUrl, slidesUrl });
             }
         };
 
         checkUser();
     }, []);
-
-    console.log({ fileUrls });
-
-    console.log({ proposal, pitchingSlides });
-    console.log(JSON.stringify({ fileUrls }));
 
     const handleFileUpload = (e, setter) => {
         const file = e.target.files[0];
@@ -111,8 +104,6 @@ const SubmissionPage = () => {
                 teamId,
                 track,
             );
-
-            console.log({ submission, submitType });
 
             if (submission && type === submitType.submit) {
                 setSubmissionStatus("Submitted");

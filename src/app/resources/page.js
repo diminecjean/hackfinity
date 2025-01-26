@@ -60,7 +60,6 @@ export default function Resources() {
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
-            console.log({ userSession });
             if (userSession.role === UserRole.PARTICIPANT) {
                 setIsParticipant(true);
             } else {

@@ -38,8 +38,6 @@ export const fetchParticipantSubmissionData = async (userEmail) => {
         .select("solution_status, track, proposal, pitching_slides")
         .eq("team_id", teamData.team_id)
         .maybeSingle();
-
-    console.log({track: submission.track});
     
     if (submissionError) {
         console.log("Error fetching submission status:", submissionError.message);

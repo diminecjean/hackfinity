@@ -12,8 +12,6 @@ export const fetchTeamsData = async () => {
             .from("Team")
             .select("team_id, team_name, team_code");
 
-        console.log({ teams });
-
         if (teamsError) {
             throw new Error("Error fetching teams", teamsError);
         }
@@ -41,7 +39,6 @@ export const fetchTeamsData = async () => {
                         if (!solution) {
                             solutionData = null;
                         } else {
-                            console.log({ proposal: solution.proposal, slides: solution.pitching_slides });
                             solutionData = solution;
                         }
                         
@@ -50,7 +47,6 @@ export const fetchTeamsData = async () => {
                 // 2.1.1 Get the signed URL for each file
 
                 if (solutionData && solutionData.pitching_slides !== "" && solutionData.proposal !== "") {
-                    console.log({proposal:solutionData.proposal, slides: solutionData.pitching_slides});
                     const proposalURL = await retrieveFileSignedUrl("solutions_bucket", solutionData.proposal);
                     const slidesURL = await retrieveFileSignedUrl("solutions_bucket", solutionData.pitching_slides);
                     
@@ -66,7 +62,6 @@ export const fetchTeamsData = async () => {
                     .eq("team_code", team.team_code);
 
                 if (participantsError) {
-                    console.log(team.team_code);
                     console.error("Error fetching participants:", participantsError);
                     return null;
                 }

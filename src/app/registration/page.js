@@ -395,7 +395,6 @@ export default function Registration() {
 
     function setTeam(teamType) {
         setTeamType(teamType);
-        console.log({ teamType });
         if (teamType === NEW_TEAM) {
             setRole("leader");
         } else if (teamType === EXISTING_TEAM) {
@@ -442,7 +441,6 @@ export default function Registration() {
 
         try {
             // Step 1: Create team if leader
-            console.log({ role });
             if (role === "leader") {
                 const { error: teamError } = await supabase.from("Team").insert([
                     {
