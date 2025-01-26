@@ -3,12 +3,49 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import TopBanner from "@/components/custom/top-banner";
-import { createClient } from "@/utils/supabase/component";
 import { uploadFileToSupabaseBucket, retrieveFileSignedUrl } from "@/utils/supabase/storage";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { fetchParticipantSubmissionData, postParticipantSubmission } from "./api";
 
-const supabase = createClient();
+const renderFileUploadSection = (label, fileUrl, file, setFile) => (
+    <div className='w-1/2'>
+        <div className="flex gap-4 flex-row items-center justify-between mb-2">
+            <label className='text-lg font-semibold'>{label}</label>
+            {fileUrl && (
+                <Link
+                    className="p-2 rounded-lg bg-blue-light text-sm text-black hover:bg-blue-mid"
+                    href={fileUrl}
+                >
+                    View submitted {label.toLowerCase()}
+                </Link>
+            )}
+        </div>
+        <div className='border-2 border-dashed border-blue-light rounded p-4'>
+            <input
+                type='file'
+                className='file:mr-4'
+                onChange={(e) => handleFileUpload(e, setFile)}
+            />
+            {file && (
+                <p className='mt-2 text-sm'>File: {file.name}</p>
+            )}
+        </div>
+    </div>
+);
+
+const renderViewOnlySection = (label, fileUrl) => (
+    <div className='w-1/2'>
+        <label className='block text-lg font-semibold mb-2'>{label}:</label>
+        <div className='border-2 border-dashed border-blue-light rounded p-4 flex justify-center'>
+            <Link
+                className="text-semibold hover:underline hover:text-yellow-mid"
+                href={fileUrl}
+            >
+                View submitted {label.toLowerCase()}
+            </Link>
+        </div>
+    </div>
+);
 
 const SubmissionPage = () => {
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
@@ -159,132 +196,24 @@ const SubmissionPage = () => {
 
                             {/* File Submission Section */}
                             <div className='flex space-x-6'>
-                            {
-                                (fileUrls.proposalUrl && fileUrls.slidesUrl) ? (
+                                {(fileUrls.proposalUrl && fileUrls.slidesUrl) ? (
                                     submissionStatus === "Draft" ? (
                                         <>
-                                            <div className='w-1/2'>
-                                                <div className="flex gap-4 flex-row items-center justify-between mb-2">
-                                                    <div>
-                                                        <label className='text-lg font-semibold'>
-                                                            Proposal:
-                                                        </label>
-                                                    </div>
-                                                    <div className="my-4">
-                                                        <Link
-                                                            className="p-2 rounded-lg bg-blue-light text-sm text-black hover:bg-blue-mid"
-                                                            href={fileUrls.proposalUrl}>
-                                                            View submitted proposal
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                <div className='border-2 border-dashed border-blue-light rounded p-4'>
-                                                    <input
-                                                        type='file'
-                                                        className='file:mr-4'
-                                                        onChange={(e) => handleFileUpload(e, setProposal)}
-                                                    />
-                                                    {proposal && (
-                                                        <p className='mt-2 text-sm'>File: {proposal.name}</p>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            <div className='w-1/2'>
-                                                <div className="flex gap-4 flex-row items-center justify-between mb-2">
-                                                    <div>
-                                                        <label className='text-lg font-semibold'>
-                                                            Pitching Slides:
-                                                        </label>
-                                                    </div>
-                                                    <div className="my-4">
-                                                        <Link
-                                                            className="p-2 rounded-lg bg-blue-light text-sm text-black hover:bg-blue-mid"
-                                                            href={fileUrls.slidesUrl}>
-                                                                View submitted slides
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                <div className='border-2 border-dashed border-blue-light rounded p-4'>
-                                                    <input
-                                                        type='file'
-                                                        className='file:mr-4'
-                                                        onChange={(e) => handleFileUpload(e, setPitchingSlides)}
-                                                    />
-                                                    {pitchingSlides && (
-                                                        <p className='mt-2 text-sm'>
-                                                            File: {pitchingSlides.name}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </div>
+                                            {renderFileUploadSection("Proposal", fileUrls.proposalUrl, proposal, setProposal)}
+                                            {renderFileUploadSection("Pitching Slides", fileUrls.slidesUrl, pitchingSlides, setPitchingSlides)}
                                         </>
-                                    ):(
+                                    ) : (
                                         <>
-                                            <div className='w-1/2'>
-                                                <label className='block text-lg font-semibold mb-2'>
-                                                    Proposal:
-                                                </label>
-                                                <div className='border-2 border-dashed border-blue-light rounded p-4 flex justify-center'>
-                                                    <Link
-                                                        className="text-semibold hover:underline hover:text-yellow-mid"
-                                                        href={fileUrls.proposalUrl}>
-                                                            View submitted proposal
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                            <div className='w-1/2'>
-                                                <label className='block text-lg font-semibold mb-2'>
-                                                    Slides:
-                                                </label>
-                                                <div className='border-2 border-dashed border-blue-light rounded p-4 flex justify-center'>
-                                                    <Link
-                                                        className="text-semibold hover:underline hover:text-yellow-mid"
-                                                        href={fileUrls.slidesUrl}>
-                                                            View submitted slides
-                                                    </Link>
-                                                </div>
-                                            </div>
+                                            {renderViewOnlySection("Proposal", fileUrls.proposalUrl)}
+                                            {renderViewOnlySection("Slides", fileUrls.slidesUrl)}
                                         </>
                                     )
-                                ):(
+                                ) : (
                                     <>
-                                        <div className='w-1/2'>
-                                            <label className='block text-lg font-semibold mb-2'>
-                                                Proposal:
-                                            </label>
-                                            <div className='border-2 border-dashed border-blue-light rounded p-4'>
-                                                <input
-                                                    type='file'
-                                                    className='file:mr-4'
-                                                    onChange={(e) => handleFileUpload(e, setProposal)}
-                                                />
-                                                {proposal && (
-                                                    <p className='mt-2 text-sm'>File: {proposal.name}</p>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className='w-1/2'>
-                                            <label className='block text-lg font-semibold mb-2'>
-                                                Pitching Slides:
-                                            </label>
-                                            <div className='border-2 border-dashed border-blue-light rounded p-4'>
-                                                <input
-                                                    type='file'
-                                                    className='file:mr-4'
-                                                    onChange={(e) => handleFileUpload(e, setPitchingSlides)}
-                                                />
-                                                {pitchingSlides && (
-                                                    <p className='mt-2 text-sm'>
-                                                        File: {pitchingSlides.name}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
+                                        {renderFileUploadSection("Proposal", null, proposal, setProposal)}
+                                        {renderFileUploadSection("Pitching Slides", null, pitchingSlides, setPitchingSlides)}
                                     </>
-                                )
-                            }
+                                )}
                             </div>
 
                             <div className='flex space-x-4'>
