@@ -6,6 +6,12 @@ import TopBanner from "@/components/custom/top-banner";
 import { uploadFileToSupabaseBucket, retrieveFileSignedUrl } from "@/utils/supabase/storage";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { fetchParticipantSubmissionData, postParticipantSubmission } from "./api";
+import { SolutionStatus } from "@/constants";
+
+const submitType ={
+    save: "save",
+    submit: "submit",
+}
 
 const SubmissionPage = () => {
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
@@ -71,7 +77,7 @@ const SubmissionPage = () => {
         setter(file);
     };
 
-    const handleSubmit = async (submitType) => {
+    const handleSubmit = async (type) => {
         try {
             if (!teamName || !track) {
                 alert("Please fill in all required fields!");
@@ -96,25 +102,24 @@ const SubmissionPage = () => {
                 return;
             }
 
-            let submissionStatus = "Draft";
-            console.log({ submitType });
-            if (submitType === "submit") {
-                submissionStatus = "Submitted";
-            }
-
             const submission = await postParticipantSubmission(
                 proposalPath,
                 pitchingSlidesPath,
-                submissionStatus,
+                type === submitType.submit ? SolutionStatus.Submitted : SolutionStatus.Draft,
                 teamId,
                 track,
             );
-            if (submission && submitType === "submit") {
+
+            console.log({submission, submitType});
+
+
+            if (submission && type === submitType.submit) {
                 setSubmissionStatus("Submitted");
                 alert("Submission successful!");
-            } else if (submission && submitType === "save") {
+            } else if (submission && type === submitType.save) {
                 alert("Draft saved!");
             }
+
         } catch (err) {
             console.error("Error during submission:", err);
             alert("An unexpected error occurred. Please try again.");
@@ -257,7 +262,7 @@ const SubmissionPage = () => {
                                 <button
                                     type='button'
                                     className='bg-red-light font-semibold px-4 py-2 rounded text-black hover:bg-red-mid'
-                                    onClick={async () => await handleSubmit("save")}
+                                    onClick={async () => await handleSubmit(submitType.save)}
                                     disabled={submissionStatus === "Submitted"}
                                 >
                                     Save
@@ -267,7 +272,7 @@ const SubmissionPage = () => {
                                     className='bg-green-light font-semibold px-4 py-2 rounded text-black hover:bg-green-mid'
                                     onClick={async () => {
                                         const confirmSubmit = confirm("Are you sure you want to submit?");
-                                        if(confirmSubmit) await handleSubmit("submit");
+                                        if(confirmSubmit) await handleSubmit(submitType.submit);
                                     }}
                                     disabled={submissionStatus === "Submitted"}
                                 >

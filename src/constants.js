@@ -3,3 +3,9 @@ export const UserRole = {
     PARTICIPANT: "participant",
     NONE: "None",
 };
+
+export const SolutionStatus = {
+    Submitted: "Submitted",
+    Draft: "Draft",
+    None: "None",
+};

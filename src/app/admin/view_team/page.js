@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { fetchTeamsData } from "./api";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { UserRole } from "@/constants";
-import { SolutionStatus } from "@/app/admin/view_team/api";
+import { SolutionStatus } from "@/constants";
 
 const TeamsTable = ({ teams }) => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -62,7 +62,7 @@ const TeamsTable = ({ teams }) => {
                                 <td className='p-4'>{team.members}</td>
                                 <td className='p-4'>
                                     <span
-                                        className={`px-2 py-1 rounded text-black ${team.submission === SolutionStatus.Submitted ? "bg-green-light" : team.submission === SolutionStatus.Pending ? "bg-orange-mid" : "bg-grey"}`}
+                                        className={`px-2 py-1 rounded text-black ${team.submission === SolutionStatus.Submitted ? "bg-green-light" : team.submission === SolutionStatus.Draft ? "bg-orange-mid" : "bg-grey"}`}
                                     >
                                         {team.submission}
                                     </span>
@@ -94,7 +94,7 @@ const TeamsTable = ({ teams }) => {
                                     <span>Submission Status</span>
                                     <span>:</span>
                                     <span
-                                        className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === SolutionStatus.Submitted ? "bg-green-light" : selectedTeam.submission === SolutionStatus.Pending ? "bg-orange-mid" : "bg-grey"}`}
+                                        className={`px-2 rounded flex items-center text-black ${selectedTeam.submission === SolutionStatus.Submitted ? "bg-green-light" : selectedTeam.submission === SolutionStatus.Draft ? "bg-orange-mid" : "bg-grey"}`}
                                     >
                                         {selectedTeam.submission}
                                     </span>

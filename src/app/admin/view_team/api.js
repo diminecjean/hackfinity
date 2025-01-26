@@ -1,12 +1,7 @@
 import { createClient } from "@/utils/supabase/component";
+import { SolutionStatus } from "@/constants";
 
 const supabase = createClient();
-
-export const SolutionStatus = {
-    Submitted: "Submitted",
-    Pending: "Pending",
-    None: "None",
-};
 
 export const fetchTeamsData = async () => {
     try {
