@@ -21,8 +21,8 @@ export const uploadFileToSupabaseBucket = async (bucket, file_name, file) => {
 
 /**
  * 
- * @param bucket options: solutions_bucket, resources_bucket (TO BE ADDED)
- * @param file_path file_path for the bucket, stored in Solutions table
+ * @param bucket options: solutions_bucket, resources_bucket
+ * @param file_path file_path for the bucket, stored in Solutions table and Resources table
  * @returns {string} signed URL for downloading the file
  */
 export const retrieveFileSignedUrl = async (bucket, file_path) => {

@@ -102,15 +102,33 @@ const TeamsTable = ({ teams }) => {
                                 <div className='grid grid-cols-[140px_10px_auto]'>
                                     <span>Proposal</span>
                                     <span>:</span>
-                                    <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                        <button>{selectedTeam.proposal}</button>
+                                    <span className='font-bold text-blue-light hover:text-blue-mid'>
+                                        {!selectedTeam.proposalURL ? (
+                                            <span>{selectedTeam.proposal}</span>
+                                        ) : (
+                                            <Link
+                                                href={selectedTeam.proposalURL}
+                                                className='underline hover:text-blue-mid'
+                                            >
+                                                {selectedTeam.proposal}
+                                            </Link>
+                                        )}
                                     </span>
                                 </div>
                                 <div className='grid grid-cols-[140px_10px_auto]'>
                                     <span>Pitching Slides</span>
                                     <span>:</span>
-                                    <span className='font-bold underline text-blue-light hover:text-blue-mid'>
-                                        <button>{selectedTeam.pitching_slides}</button>
+                                    <span className='font-bold text-blue-light'>
+                                        {!selectedTeam.pitching_slidesURL ? (
+                                            <span>{selectedTeam.pitching_slides}</span>
+                                        ) : (
+                                            <Link
+                                                href={selectedTeam.pitching_slidesURL}
+                                                className='underline hover:text-blue-mid'
+                                            >
+                                                {selectedTeam.pitching_slides}
+                                            </Link>
+                                        )}
                                     </span>
                                 </div>
                             </div>
@@ -142,7 +160,7 @@ const TeamsPage = () => {
 
         const fetchUser = async () => {
             const user = await fetchLoggedInUser();
-            if (!user || user.role !== UserRole.ADMIN){
+            if (!user || user.role !== UserRole.ADMIN) {
                 setIsAdmin(false);
             } else {
                 setIsAdmin(true);
@@ -152,7 +170,6 @@ const TeamsPage = () => {
         loadTeams();
         fetchUser();
     }, []);
-
 
     return (
         <div className='min-h-screen bg-blue-900 text-white'>

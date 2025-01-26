@@ -1,5 +1,7 @@
 import { createClient } from "@/utils/supabase/component";
 import { SolutionStatus } from "@/constants";
+import { retrieveFileSignedUrl } from "@/utils/supabase/storage";
+
 
 const supabase = createClient();
 
@@ -45,6 +47,17 @@ export const fetchTeamsData = async () => {
                         
                 }
 
+                // 2.1.1 Get the signed URL for each file
+
+                if (solutionData && solutionData.pitching_slides !== "" && solutionData.proposal !== "") {
+                    console.log({proposal:solutionData.proposal, slides: solutionData.pitching_slides});
+                    const proposalURL = await retrieveFileSignedUrl("solutions_bucket", solutionData.proposal);
+                    const slidesURL = await retrieveFileSignedUrl("solutions_bucket", solutionData.pitching_slides);
+                    
+                    solutionData = { ...solutionData, proposalURL, slidesURL };
+                }
+
+
                 // 2.2 Fetch number of participants for each team
                 // Can fetch participant info if needed
                 const { data: participants, error: participantsError } = await supabase
@@ -65,6 +78,8 @@ export const fetchTeamsData = async () => {
                     submission: solutionData?.solution_status || SolutionStatus.None,
                     proposal: solutionData?.proposal || SolutionStatus.None,
                     pitching_slides: solutionData?.pitching_slides || SolutionStatus.None,
+                    proposalURL: solutionData?.proposalURL || null,
+                    pitching_slidesURL: solutionData?.slidesURL || null,
                 };
             }),
         );
