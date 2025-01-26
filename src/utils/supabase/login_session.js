@@ -13,6 +13,10 @@ const supabase = createClient();
  */
 export const fetchLoggedInUser = async () => {
     try {
+
+        const userSession = await fetchSessionAndUser();
+        console.log({userSession});
+
         // Fetch user authentication data
         const { data: userData, error } = await supabase.auth.getUser();
         if (error) throw error;
@@ -45,7 +49,7 @@ export const fetchLoggedInUser = async () => {
 
             // Return admin role if found
             if (adminData) {
-                console.log("admin role");
+                console.log(JSON.stringify({userSession:{...userSession, role:UserRole.ADMIN}},null,2));
                 return {
                     ...userData.user,
                     role: UserRole.ADMIN,
@@ -55,7 +59,7 @@ export const fetchLoggedInUser = async () => {
 
         // If we found participant data, return as participant
         if (participantData) {
-            console.log("participant role");
+            console.log(JSON.stringify({userSession:{...userSession, role:UserRole.PARTICIPANT}},null,2));
             return {
                 ...userData.user,
                 role: UserRole.PARTICIPANT,
@@ -83,6 +87,6 @@ export const fetchSessionAndUser = async () => {
         console.error("Error fetching session:", error.message);
         return null;
     }
-    console.log("Session:", session);
-    return session?.user; // Contains the logged-in user's details
+    
+    return session; 
 };
