@@ -6,12 +6,12 @@ import TopBanner from "@/components/custom/top-banner";
 import { uploadFileToSupabaseBucket, retrieveFileSignedUrl } from "@/utils/supabase/storage";
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { fetchParticipantSubmissionData, postParticipantSubmission } from "./api";
-import { SolutionStatus } from "@/constants";
+import { SolutionStatus, UserRole } from "@/constants";
 
-const submitType ={
+const submitType = {
     save: "save",
     submit: "submit",
-}
+};
 
 const SubmissionPage = () => {
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
@@ -21,12 +21,15 @@ const SubmissionPage = () => {
     const [proposal, setProposal] = useState(null);
     const [pitchingSlides, setPitchingSlides] = useState(null);
     const [fileUrls, setFileUrls] = useState({});
+    const [isParticipant, setIsParticipant] = useState(false);
 
     // Check if user is logged in
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
             console.log({ userSession });
+            if (userSession.role === UserRole.PARTICIPANT) setIsParticipant(true);
+            else setIsParticipant(false);
 
             const submissionData = await fetchParticipantSubmissionData(userSession.email);
             setSubmissionStatus(submissionData.submissionStatus);
@@ -109,8 +112,7 @@ const SubmissionPage = () => {
                 track,
             );
 
-            console.log({submission, submitType});
-
+            console.log({ submission, submitType });
 
             if (submission && type === submitType.submit) {
                 setSubmissionStatus("Submitted");
@@ -118,7 +120,6 @@ const SubmissionPage = () => {
             } else if (submission && type === submitType.save) {
                 alert("Draft saved!");
             }
-
         } catch (err) {
             console.error("Error during submission:", err);
             alert("An unexpected error occurred. Please try again.");
@@ -171,115 +172,139 @@ const SubmissionPage = () => {
             />
             <div className='max-w-4xl mx-auto'>
                 <main className='mt-12 p-6 rounded-lg shadow-2xl'>
-                    <div className='mt-0'>
-                        <div className='flex items-center'>
-                            <span className='font-bold text-xl'>Submission Status:</span>
-                            <span className='ml-2 px-2 py-1 text-black rounded'>
-                                <div
-                                    className={`w-24 h-8 flex items-center justify-center ${
-                                        submissionStatus === "Draft"
-                                            ? "bg-red-light"
-                                            : "bg-green-light"
-                                    } text-base font-semibold rounded`}
+                    {!isParticipant ? (
+                        <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                            <div>
+                                You need to log in with a participant account to access this page.
+                            </div>
+                            <div>
+                                <Link
+                                    href='/'
+                                    className='underline text-blue-mid hover:text-blue-light'
                                 >
-                                    {submissionStatus}
-                                </div>
-                            </span>
+                                    Return to Homepage
+                                </Link>
+                            </div>
                         </div>
-
-                        <form className='mt-6 space-y-6'>
-                            <div>
-                                <label className='block text-lg font-semibold'>Team Name:</label>
-                                <input
-                                    type='text'
-                                    className='w-full mt-2 p-2 font-medium rounded bg-grey border border-blue focus:ring-2 focus:ring-yellow-mid text-black'
-                                    value={teamName}
-                                    onChange={(e) => setTeamName(e.target.value)}
-                                />
+                    ) : (
+                        <div className='mt-0'>
+                            <div className='flex items-center'>
+                                <span className='font-bold text-xl'>Submission Status:</span>
+                                <span className='ml-2 px-2 py-1 text-black rounded'>
+                                    <div
+                                        className={`w-24 h-8 flex items-center justify-center ${
+                                            submissionStatus === "Draft"
+                                                ? "bg-red-light"
+                                                : "bg-green-light"
+                                        } text-base font-semibold rounded`}
+                                    >
+                                        {submissionStatus}
+                                    </div>
+                                </span>
                             </div>
 
-                            <div>
-                                <label className='block text-lg font-semibold'>Track:</label>
-                                <select
-                                    className='w-full mt-2 p-2 font-medium rounded bg-grey-dark border border-blue focus:ring-2 focus:ring-yellow-mid text-black'
-                                    value={track}
-                                    onChange={(e) => setTrack(e.target.value)}
-                                >
-                                    <option value=''>Select a track</option>
-                                    <option value='Track 1'>Track 1</option>
-                                    <option value='Track 2'>Track 2</option>
-                                    <option value='Track 3'>Track 3</option>
-                                </select>
-                            </div>
+                            <form className='mt-6 space-y-6'>
+                                <div>
+                                    <label className='block text-lg font-semibold'>
+                                        Team Name:
+                                    </label>
+                                    <input
+                                        type='text'
+                                        className='w-full mt-2 p-2 font-medium rounded bg-grey border border-blue focus:ring-2 focus:ring-yellow-mid text-black'
+                                        value={teamName}
+                                        onChange={(e) => setTeamName(e.target.value)}
+                                    />
+                                </div>
 
-                            {/* File Submission Section */}
-                            <div className='flex space-x-6'>
-                                {fileUrls.proposalUrl && fileUrls.slidesUrl ? (
-                                    submissionStatus === "Draft" ? (
+                                <div>
+                                    <label className='block text-lg font-semibold'>Track:</label>
+                                    <select
+                                        className='w-full mt-2 p-2 font-medium rounded bg-grey-dark border border-blue focus:ring-2 focus:ring-yellow-mid text-black'
+                                        value={track}
+                                        onChange={(e) => setTrack(e.target.value)}
+                                    >
+                                        <option value=''>Select a track</option>
+                                        <option value='Track 1'>Track 1</option>
+                                        <option value='Track 2'>Track 2</option>
+                                        <option value='Track 3'>Track 3</option>
+                                    </select>
+                                </div>
+
+                                {/* File Submission Section */}
+                                <div className='flex space-x-6'>
+                                    {fileUrls.proposalUrl && fileUrls.slidesUrl ? (
+                                        submissionStatus === "Draft" ? (
+                                            <>
+                                                {renderFileUploadSection(
+                                                    "Proposal",
+                                                    fileUrls.proposalUrl,
+                                                    proposal,
+                                                    setProposal,
+                                                )}
+                                                {renderFileUploadSection(
+                                                    "Pitching Slides",
+                                                    fileUrls.slidesUrl,
+                                                    pitchingSlides,
+                                                    setPitchingSlides,
+                                                )}
+                                            </>
+                                        ) : (
+                                            <>
+                                                {renderViewOnlySection(
+                                                    "Proposal",
+                                                    fileUrls.proposalUrl,
+                                                )}
+                                                {renderViewOnlySection(
+                                                    "Slides",
+                                                    fileUrls.slidesUrl,
+                                                )}
+                                            </>
+                                        )
+                                    ) : (
                                         <>
                                             {renderFileUploadSection(
                                                 "Proposal",
-                                                fileUrls.proposalUrl,
+                                                null,
                                                 proposal,
                                                 setProposal,
                                             )}
                                             {renderFileUploadSection(
                                                 "Pitching Slides",
-                                                fileUrls.slidesUrl,
+                                                null,
                                                 pitchingSlides,
                                                 setPitchingSlides,
                                             )}
                                         </>
-                                    ) : (
-                                        <>
-                                            {renderViewOnlySection(
-                                                "Proposal",
-                                                fileUrls.proposalUrl,
-                                            )}
-                                            {renderViewOnlySection("Slides", fileUrls.slidesUrl)}
-                                        </>
-                                    )
-                                ) : (
-                                    <>
-                                        {renderFileUploadSection(
-                                            "Proposal",
-                                            null,
-                                            proposal,
-                                            setProposal,
-                                        )}
-                                        {renderFileUploadSection(
-                                            "Pitching Slides",
-                                            null,
-                                            pitchingSlides,
-                                            setPitchingSlides,
-                                        )}
-                                    </>
-                                )}
-                            </div>
+                                    )}
+                                </div>
 
-                            <div className='flex space-x-4'>
-                                <button
-                                    type='button'
-                                    className='bg-red-light font-semibold px-4 py-2 rounded text-black hover:bg-red-mid'
-                                    onClick={async () => await handleSubmit(submitType.save)}
-                                    disabled={submissionStatus === "Submitted"}
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    type='button'
-                                    className='bg-green-light font-semibold px-4 py-2 rounded text-black hover:bg-green-mid'
-                                    onClick={async () => {
-                                        const confirmSubmit = confirm("Are you sure you want to submit?");
-                                        if(confirmSubmit) await handleSubmit(submitType.submit);
-                                    }}
-                                    disabled={submissionStatus === "Submitted"}
-                                >
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                                <div className='flex space-x-4'>
+                                    <button
+                                        type='button'
+                                        className='bg-red-light font-semibold px-4 py-2 rounded text-black hover:bg-red-mid'
+                                        onClick={async () => await handleSubmit(submitType.save)}
+                                        disabled={submissionStatus === "Submitted"}
+                                    >
+                                        Save
+                                    </button>
+                                    <button
+                                        type='button'
+                                        className='bg-green-light font-semibold px-4 py-2 rounded text-black hover:bg-green-mid'
+                                        onClick={async () => {
+                                            const confirmSubmit = confirm(
+                                                "Are you sure you want to submit?",
+                                            );
+                                            if (confirmSubmit)
+                                                await handleSubmit(submitType.submit);
+                                        }}
+                                        disabled={submissionStatus === "Submitted"}
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
                 </main>
             </div>
         </div>

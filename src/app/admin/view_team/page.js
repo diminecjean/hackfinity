@@ -151,6 +151,7 @@ const TeamsTable = ({ teams }) => {
 const TeamsPage = () => {
     const [teams, setTeams] = useState([]);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const loadTeams = async () => {
@@ -159,17 +160,34 @@ const TeamsPage = () => {
         };
 
         const fetchUser = async () => {
+            await loadTeams();
+
             const user = await fetchLoggedInUser();
             if (!user || user.role !== UserRole.ADMIN) {
                 setIsAdmin(false);
             } else {
                 setIsAdmin(true);
             }
+
+            setIsLoading(false);
         };
 
-        loadTeams();
         fetchUser();
     }, []);
+
+     if (isLoading) {
+            return (
+                <div className='min-h-screen bg-blue-900 text-white'>
+                    <TopBanner
+                        title='Teams'
+                        description='View Registered Teams and Their Submissions Status'
+                    />
+                    <div className='mx-auto mt-10 flex flex-col justify-center items-center gap-6'>
+                        <div>Loading teams...</div>
+                    </div>
+                </div>
+            );
+        }
 
     return (
         <div className='min-h-screen bg-blue-900 text-white'>
