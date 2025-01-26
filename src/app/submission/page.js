@@ -7,46 +7,6 @@ import { uploadFileToSupabaseBucket, retrieveFileSignedUrl } from "@/utils/supab
 import { fetchLoggedInUser } from "@/utils/supabase/login_session";
 import { fetchParticipantSubmissionData, postParticipantSubmission } from "./api";
 
-const renderFileUploadSection = (label, fileUrl, file, setFile) => (
-    <div className='w-1/2'>
-        <div className="flex gap-4 flex-row items-center justify-between mb-2">
-            <label className='text-lg font-semibold'>{label}</label>
-            {fileUrl && (
-                <Link
-                    className="p-2 rounded-lg bg-blue-light text-sm text-black hover:bg-blue-mid"
-                    href={fileUrl}
-                >
-                    View submitted {label.toLowerCase()}
-                </Link>
-            )}
-        </div>
-        <div className='border-2 border-dashed border-blue-light rounded p-4'>
-            <input
-                type='file'
-                className='file:mr-4'
-                onChange={(e) => handleFileUpload(e, setFile)}
-            />
-            {file && (
-                <p className='mt-2 text-sm'>File: {file.name}</p>
-            )}
-        </div>
-    </div>
-);
-
-const renderViewOnlySection = (label, fileUrl) => (
-    <div className='w-1/2'>
-        <label className='block text-lg font-semibold mb-2'>{label}:</label>
-        <div className='border-2 border-dashed border-blue-light rounded p-4 flex justify-center'>
-            <Link
-                className="text-semibold hover:underline hover:text-yellow-mid"
-                href={fileUrl}
-            >
-                View submitted {label.toLowerCase()}
-            </Link>
-        </div>
-    </div>
-);
-
 const SubmissionPage = () => {
     const [submissionStatus, setSubmissionStatus] = useState("Draft");
     const [teamName, setTeamName] = useState("");
@@ -60,7 +20,7 @@ const SubmissionPage = () => {
     useEffect(() => {
         const checkUser = async () => {
             const userSession = await fetchLoggedInUser();
-            console.log({userSession});
+            console.log({ userSession });
 
             const submissionData = await fetchParticipantSubmissionData(userSession.email);
             setSubmissionStatus(submissionData.submissionStatus);
@@ -69,14 +29,14 @@ const SubmissionPage = () => {
             setProposal(submissionData.submissionProposal);
             setPitchingSlides(submissionData.submissionSlides);
 
-            switch(submissionData.submissionTrack){
-                case '1':
+            switch (submissionData.submissionTrack) {
+                case "1":
                     setTrack("Track 1");
                     break;
-                case '2':
+                case "2":
                     setTrack("Track 2");
                     break;
-                case '3':
+                case "3":
                     setTrack("Track 3");
                     break;
                 default:
@@ -85,34 +45,39 @@ const SubmissionPage = () => {
 
             if (submissionData.submissionProposal && submissionData.submissionSlides) {
                 // Fetch signed urls for proposal and pitching slides
-                const proposalUrl = await retrieveFileSignedUrl("solutions_bucket", submissionData.submissionProposal);
-                const slidesUrl = await retrieveFileSignedUrl("solutions_bucket", submissionData.submissionSlides);
-                console.log({proposalUrl, slidesUrl});
+                const proposalUrl = await retrieveFileSignedUrl(
+                    "solutions_bucket",
+                    submissionData.submissionProposal,
+                );
+                const slidesUrl = await retrieveFileSignedUrl(
+                    "solutions_bucket",
+                    submissionData.submissionSlides,
+                );
+                console.log({ proposalUrl, slidesUrl });
                 setFileUrls({ proposalUrl, slidesUrl });
             }
-
         };
 
         checkUser();
     }, []);
 
-    console.log({fileUrls});
+    console.log({ fileUrls });
 
     console.log({ proposal, pitchingSlides });
-    console.log(JSON.stringify({fileUrls}));
-    
+    console.log(JSON.stringify({ fileUrls }));
+
     const handleFileUpload = (e, setter) => {
         const file = e.target.files[0];
         setter(file);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (submitType) => {
         try {
             if (!teamName || !track) {
                 alert("Please fill in all required fields!");
                 return;
             }
-            console.log('inhandlesubmit',{proposal, pitchingSlides});
+            console.log("inhandlesubmit", { proposal, pitchingSlides });
 
             const proposalPath = await uploadFileToSupabaseBucket(
                 "solutions_bucket",
@@ -131,18 +96,68 @@ const SubmissionPage = () => {
                 return;
             }
 
-            // TODO: add submission status based on save/submit
-            const submission = await postParticipantSubmission(proposalPath, pitchingSlidesPath, "Submitted", teamId, track);
-            if (submission){
-                setSubmissionStatus("Submitted");
-                alert("Submission successful!");
+            let submissionStatus = "Draft";
+            console.log({ submitType });
+            if (submitType === "submit") {
+                submissionStatus = "Submitted";
             }
 
+            const submission = await postParticipantSubmission(
+                proposalPath,
+                pitchingSlidesPath,
+                submissionStatus,
+                teamId,
+                track,
+            );
+            if (submission && submitType === "submit") {
+                setSubmissionStatus("Submitted");
+                alert("Submission successful!");
+            } else if (submission && submitType === "save") {
+                alert("Draft saved!");
+            }
         } catch (err) {
             console.error("Error during submission:", err);
             alert("An unexpected error occurred. Please try again.");
         }
     };
+
+    const renderFileUploadSection = (label, fileUrl, file, setFile) => (
+        <div className='w-1/2'>
+            <div className='flex gap-4 flex-row items-center justify-between mb-2'>
+                <label className='text-lg font-semibold'>{label}</label>
+                {fileUrl && (
+                    <Link
+                        className='p-2 rounded-lg bg-blue-light text-sm text-black hover:bg-blue-mid'
+                        href={fileUrl}
+                    >
+                        View submitted {label.toLowerCase()}
+                    </Link>
+                )}
+            </div>
+            <div className='border-2 border-dashed border-blue-light rounded p-4'>
+                <input
+                    type='file'
+                    className='file:mr-4'
+                    onChange={(e) => handleFileUpload(e, setFile)}
+                />
+                {file && <p className='mt-2 text-sm'>File: {file.name}</p>}
+            </div>
+        </div>
+    );
+
+    const renderViewOnlySection = (label, fileUrl) => (
+        <div className='w-1/2'>
+            <label className='block text-lg font-semibold mb-2'>{label}:</label>
+            <div className='border-2 border-dashed border-blue-light rounded p-4 flex justify-center'>
+                <Link
+                    className='text-semibold hover:underline hover:text-yellow-mid'
+                    href={fileUrl}
+                >
+                    View submitted {label.toLowerCase()}
+                </Link>
+            </div>
+        </div>
+    );
 
     return (
         <div className='min-h-screen bg-blue-dark text-white'>
@@ -193,25 +208,47 @@ const SubmissionPage = () => {
                                 </select>
                             </div>
 
-
                             {/* File Submission Section */}
                             <div className='flex space-x-6'>
-                                {(fileUrls.proposalUrl && fileUrls.slidesUrl) ? (
+                                {fileUrls.proposalUrl && fileUrls.slidesUrl ? (
                                     submissionStatus === "Draft" ? (
                                         <>
-                                            {renderFileUploadSection("Proposal", fileUrls.proposalUrl, proposal, setProposal)}
-                                            {renderFileUploadSection("Pitching Slides", fileUrls.slidesUrl, pitchingSlides, setPitchingSlides)}
+                                            {renderFileUploadSection(
+                                                "Proposal",
+                                                fileUrls.proposalUrl,
+                                                proposal,
+                                                setProposal,
+                                            )}
+                                            {renderFileUploadSection(
+                                                "Pitching Slides",
+                                                fileUrls.slidesUrl,
+                                                pitchingSlides,
+                                                setPitchingSlides,
+                                            )}
                                         </>
                                     ) : (
                                         <>
-                                            {renderViewOnlySection("Proposal", fileUrls.proposalUrl)}
+                                            {renderViewOnlySection(
+                                                "Proposal",
+                                                fileUrls.proposalUrl,
+                                            )}
                                             {renderViewOnlySection("Slides", fileUrls.slidesUrl)}
                                         </>
                                     )
                                 ) : (
                                     <>
-                                        {renderFileUploadSection("Proposal", null, proposal, setProposal)}
-                                        {renderFileUploadSection("Pitching Slides", null, pitchingSlides, setPitchingSlides)}
+                                        {renderFileUploadSection(
+                                            "Proposal",
+                                            null,
+                                            proposal,
+                                            setProposal,
+                                        )}
+                                        {renderFileUploadSection(
+                                            "Pitching Slides",
+                                            null,
+                                            pitchingSlides,
+                                            setPitchingSlides,
+                                        )}
                                     </>
                                 )}
                             </div>
@@ -220,7 +257,7 @@ const SubmissionPage = () => {
                                 <button
                                     type='button'
                                     className='bg-red-light font-semibold px-4 py-2 rounded text-black hover:bg-red-mid'
-                                    onClick={() => alert("Draft Saved")}
+                                    onClick={async () => await handleSubmit("save")}
                                     disabled={submissionStatus === "Submitted"}
                                 >
                                     Save
@@ -228,7 +265,10 @@ const SubmissionPage = () => {
                                 <button
                                     type='button'
                                     className='bg-green-light font-semibold px-4 py-2 rounded text-black hover:bg-green-mid'
-                                    onClick={handleSubmit}
+                                    onClick={async () => {
+                                        const confirmSubmit = confirm("Are you sure you want to submit?");
+                                        if(confirmSubmit) await handleSubmit("submit");
+                                    }}
                                     disabled={submissionStatus === "Submitted"}
                                 >
                                     Submit
