@@ -332,9 +332,9 @@ export default function Registration() {
         resolver: zodResolver(formSchema),
         mode: "onChange",
         defaultValues: {
-            first_name: "Wei En",
-            last_name: "Looi",
-            email: "looi.weien02@gmail.com",
+            first_name: "Ying Hooi",
+            last_name: "Lee",
+            email: "yinghooi2002@gmail.com",
             phone: "0135883813",
             country: "Malaysia",
             university: "Universiti Sains Malaysia",
