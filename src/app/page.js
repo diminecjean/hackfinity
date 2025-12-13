@@ -68,8 +68,8 @@ export default function Home() {
                         className='flex flex-col md:flex-row justify-between p-16 gap-16'
                     >
                         <div className='text-white align-middle'>
-                            <h1 className='py-2 font-bold text-4xl'>
-                                What is <span className='underline'>BizMaker</span>?
+                            <h1 className='py-4 font-bold text-4xl'>
+                                What is BizmMaker?
                             </h1>
                             <p className='py-2 text-lg font-medium leading-relaxed'>
                                 BizMaker is an annual event organized by the Management Society, USM
