@@ -86,16 +86,6 @@ export default function Home() {
                             Business Challenge & Instructions
                         </h1>
                         <div className='mx-16 my-8 py-16 px-12 rounded-2xl bg-blue-light'>
-                            <p className='font-semibold text-lg leading-relaxed'>
-                                Participants are required to propose a revolutionary business idea
-                                with the integration of digital technology for Malaysian end
-                                consumers living in a post-pandemic era. Digital transformation is
-                                the integration of digital technology into all areas of a business,
-                                fundamentally changing how companies operate and deliver value to
-                                customers. Participants may choose to develop their digitally
-                                transformed business ideas in any of the three areas listed in the
-                                following.
-                            </p>
                         </div>
                     </section>
 
