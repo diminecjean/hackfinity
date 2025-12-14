@@ -68,7 +68,7 @@ const Navbar = () => {
         {
             href: "/registration",
             label: "Registration",
-            showWhenLoggedIn: false,
+            showWhenLoggedIn: true,
             showWhenLoggedOut: true,
             showWhenAdminLoggedIn: false,
         },
