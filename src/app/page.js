@@ -69,10 +69,10 @@ export default function Home() {
                     >
                         <div className='text-white align-middle'>
                             <h1 className='py-2 font-bold text-4xl'>
-                                What is <span className='underline'>BizMaker</span>?
+                                What is <span className='underline'>React Native</span>?
                             </h1>
                             <p className='py-2 text-lg font-medium leading-relaxed'>
-                                BizMaker is an annual event organized by the Management Society, USM
+                                React Native is an annual event organized by the Management Society, USM
                                 to provide students with a platform to improve the skills and
                                 expertise required in the business and entrepreneurship fields. Are
                                 you a novice in entrepreneurship?
