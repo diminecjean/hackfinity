@@ -69,7 +69,7 @@ export default function Home() {
                     >
                         <div className='text-white align-middle'>
                             <h1 className='py-2 font-bold text-4xl'>
-                                What is <span className='underline'>React Native</span>?
+                                What is <span className='underline'>Flutter</span>?
                             </h1>
                             <p className='py-2 text-lg font-medium leading-relaxed'>
                                 Flutter is an annual event organized by the Management Society, USM
